@@ -29,8 +29,8 @@
 "switch"                return 'switch'
 "case"                  return 'case'
 "default"               return 'default'
-"println"               return 'println'
 "print"                 return 'print'
+"println"               return 'println'
 "break"                 return 'break'
 "while"                 return 'while'
 "for"                   return 'for'
@@ -43,7 +43,7 @@
 "Round"                 return 'round'
 "length"                return 'length'
 "typeof"                return 'typeOf'
-"tostring"              return 'to_String'
+"tostring"              return 'toString'
 "toCharArray"           return 'toCharArray'
 "run"                   return 'run'
 
@@ -77,8 +77,8 @@
 "]" /*CorcheteCierra*/  return 'corcheteCierra'
 
 //Extras
-([a-zA-Z])[a-zA-Z0-9_]* /*Identificador*/ return 'identificador'
-[']\\\\[']|[']\\\"[']|[']\\\'[']|[']\\n[']|[']\\t[']|[']\\r[']|['].?[']	return 'caracter'
+([a-zA-Z])[a-zA-Z0-9_]* /*Identificador*/
+[']\\\\[']|[']\\\"[']|[']\\\'[']|[']\\n[']|[']\\t[']|[']\\r[']|['].?[']	return 'CARACTER'
 [0-9]+("."[0-9]+)+\b	return 'decimal'
 [0-9]+					return 'entero'
 
@@ -90,10 +90,10 @@
 <string>"\\t"			{ cadena += "\t"; }
 <string>"\\\\"			{ cadena += "\\"; }
 <string>"\\\'"			{ cadena += "\'"; }
-<string>["]				{ yytext = cadena; this.popState(); return 'cadena'; }
+<string>["]				{ yytext = cadena; this.popState(); return 'CADENA'; }
 
 <<EOF>>               return 'EOF'
-.                     { errores.push({ tipo: "Léxico", error: yytext, linea: yylloc.first_line, columna: yylloc.first_column+1 }); return 'invalido'; }
+.                     { errores.push({ tipo: "Léxico", error: yytext, linea: yylloc.first_line, columna: yylloc.first_column+1 }); return 'INVALID'; }
 
 /lex //fin analizador léxico
 
@@ -103,28 +103,17 @@
 	
 %}
 
-/* Precedencias */
-%left 'or'
-%left 'and'
-%right 'not'
-%left 'igualacion' 'diferenciacion' 'menorQue' 'menorIgualQue' 'mayorQue' 'mayorIgualQue'
-%left 'mas' 'menos'
-%left 'asterisco' 'diagonal'  'modulo'
-%nonassoc 'circunflejo'
-%rigth 'incremento' 'decremento'
-%left umenos
-%left 'parentesisAbre' 
-
 /* Comienzo gramatica */
 %start INICIO
 
 %% /* Producciones */
 
-INICIO: INSTRUCCIONES EOF {}
+INICIO: INSTRUCCIONES EOF{}
+        | error EOF {}
 ;
 
 INSTRUCCIONES: INSTRUCCIONES INSTRUCCION {}
-            |  INSTRUCCION{}
-;
+                | INSTRUCCION {}
+; 
 
-INSTRUCCION: {};
+INSTRUCCION: print{};

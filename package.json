@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "ts-jison": "^0.0.6"
+  }
+}
