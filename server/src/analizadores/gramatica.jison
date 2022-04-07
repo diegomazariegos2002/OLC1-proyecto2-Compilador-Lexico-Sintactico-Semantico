@@ -8,15 +8,18 @@
 %lex
 /* Ajustes del analizador léxico */
 %options case-insensitive
-%s string
+%x string
 
 %% 
+
+\"[\"^\"]*\"              return 'cadena'
+
 \s+                                 /* Espacio en blanco (los ignora) */
 "//"[^\r\n]*[\r|\n|\r\n]?			// Comentario de una linea (los ignora)
 [/][*][^*]*[*]+([^/*][^*]*[*]+)*[/] /* Comentario Multilinea (los ignora) */
 
 //Palabras reservadas
-"int"                   return 'integer'
+"int"                   return 'int'
 "double"                return 'double'
 "boolean"               return 'boolean'
 "char"                  return 'char'
@@ -52,9 +55,9 @@
 "--" /*decremento*/     return 'decremento'
 "+" /*mas*/             return 'mas'
 "-" /*menos*/           return 'menos'
-"*" /*asterisco*/       return 'asterisco'
-"/" /*diagonal*/        return 'diagonal'
-"^"  /*circunflejo*/    return 'circunflejo'
+"*" /*multiplicacion*/  return 'multiplicacion'
+"/" /*division*/        return 'division'
+"^"  /*exponente*/      return 'exponente'
 "%" /*Modulo*/          return 'modulo'    
 "==" /*igualacion*/     return 'igualacion'
 "!=" /*Diferenciacion*/ return 'diferenciacion'
@@ -75,22 +78,13 @@
 "}" /*LlaveCierra*/     return 'llaveCierra'
 "[" /*CorcheteAbre*/    return 'corcheteAbre'
 "]" /*CorcheteCierra*/  return 'corcheteCierra'
+","                     return 'coma'
 
 //Extras
 ([a-zA-Z])[a-zA-Z0-9_]* /*Identificador*/ return 'identificador'
 [']\\\\[']|[']\\\"[']|[']\\\'[']|[']\\n[']|[']\\t[']|[']\\r[']|['].?[']	return 'caracter'
-[0-9]+("."[0-9]+)+\b	return 'decimal'
+[0-9]+("."[0-9]+)+\b	                return 'decimal'
 [0-9]+					return 'entero'
-
-<INITIAL>["]			{ cadena = ''; this.begin("string"); }
-<string>[^"\\]+			{ cadena += yytext; }
-<string>"\\\""			{ cadena += "\""; }
-<string>"\\n"			{ cadena += "\n"; }
-<string>\s				{ cadena += " ";  }
-<string>"\\t"			{ cadena += "\t"; }
-<string>"\\\\"			{ cadena += "\\"; }
-<string>"\\\'"			{ cadena += "\'"; }
-<string>["]				{ yytext = cadena; this.popState(); return 'cadena'; }
 
 <<EOF>>               return 'EOF'
 .                     { errores.push({ tipo: "Léxico", error: yytext, linea: yylloc.first_line, columna: yylloc.first_column+1 }); return 'invalido'; }
@@ -109,8 +103,8 @@
 %right 'not'
 %left 'igualacion' 'diferenciacion' 'menorQue' 'menorIgualQue' 'mayorQue' 'mayorIgualQue'
 %left 'mas' 'menos'
-%left 'asterisco' 'diagonal'  'modulo'
-%nonassoc 'circunflejo'
+%left 'multiplicacion' 'division' 'modulo'
+%right 'exponente'
 %rigth 'incremento' 'decremento'
 %left umenos
 %left 'parentesisAbre' 
@@ -120,11 +114,146 @@
 
 %% /* Producciones */
 
-INICIO: INSTRUCCIONES EOF {}
+INICIO: 
+        ENTRADAS EOF {}
 ;
 
-INSTRUCCIONES: INSTRUCCIONES INSTRUCCION {}
-            |  INSTRUCCION{}
+ENTRADAS: 
+        ENTRADAS ENTRADA {}
+        |  ENTRADA{}
 ;
 
-INSTRUCCION: {};
+ENTRADA:    
+        FUNCION {}
+        |   METODO {}
+        |   RUN {}
+        |   DECLARACION_VAR {}
+        |   DECLARACION_VECT {}
+        |   INSTRUCCIONES {}
+;
+
+FUNCION: 
+        identificador parentesisAbre parentesisCierra dosPuntos TIPO parentesisAbre parentesisCierra {}
+        |   identificador parentesisAbre parentesisCierra dosPuntos TIPO parentesisAbre INSTRUCCIONES parentesisCierra {}
+        |   identificador parentesisAbre LISTAPARAMETROS parentesisCierra dosPuntos TIPO parentesisAbre parentesisCierra {}
+        |   identificador parentesisAbre LISTAPARAMETROS parentesisCierra dosPuntos TIPO parentesisAbre INSTRUCCIONES parentesisCierra {}
+;
+
+METODO: 
+        identificador parentesisAbre parentesisCierra dosPuntos void llaveAbre llaveCierra {}
+        |   identificador parentesisAbre LISTAPARAMETROS parentesisCierra dosPuntos void llaveAbre llaveCierra {}
+        |   identificador parentesisAbre parentesisCierra dosPuntos void llaveAbre INSTRUCCIONES llaveCierra {}
+        |   identificador parentesisAbre LISTAPARAMETROS parentesisCierra dosPuntos void llaveAbre INSTRUCCIONES llaveCierra {}
+;
+
+RUN: 
+    run identificador parentesisAbre parentesisCierra puntoYcoma {}
+    |   run identificador parentesisAbre LISTAPARAMETROS parentesisCierra puntoYcoma {}
+;
+
+DECLARACION_VAR: 
+            TIPO LISTA_VARIABLES puntoYcoma {}
+            |   TIPO LISTA_VARIABLES igual EXPRESION puntoYcoma {}
+;
+
+LISTA_VARIABLES: 
+                LISTA_VARIABLES coma identificador {}
+                |   identificador {}
+;
+
+DECLARACION_VECT: 
+                TIPO identificador corcheteAbre corcheteCierra igual new TIPO corcheteAbre EXPRESION corcheteCierra puntoYcoma
+                |       TIPO identificador corcheteAbre corcheteCierra corcheteAbre corcheteCierra igual new TIPO corcheteAbre EXPRESION corcheteCierra corcheteAbre EXPRESION corcheteCierra puntoYcoma
+                |       TIPO identificador corcheteAbre corcheteCierra igual corcheteAbre LISTA_VALORES corcheteCierra puntoYcoma
+;
+
+LISTA_VALORES:
+                LISTA_VALORES coma VALOR {}
+                | VALOR {}
+;
+
+INSTRUCCIONES:
+        INSTRUCCIONES INSTRUCCION {}
+        | INSTRUCCION {}
+;
+
+INSTRUCCION: 
+        DECLARACION_VAR {}
+        |       DECLARACION_VECT {}
+        |       FOR {}
+        |       WHILE {}
+        |       DO_WHILE {}
+        |       IF {}
+        |       SWITCH {}
+        |       ASIGNACION {}
+        |       INCREMENTO {}
+        |       DECREMENTO {}
+        |       LLAMADA {}
+        |       PRINT {}
+        |       PRINTLN {}
+;
+
+FOR:;
+WHILE:;
+DO_WHILE:;
+IF:;
+SWITCH:;
+ASIGNACION:;
+INCREMENTO:;
+DECREMENTO:;
+LLAMADA:;
+PRINT: print parentesisAbre EXPRESION parentesisCierra puntoYcoma;
+PRINTLN:print parentesisAbre EXPRESION parentesisCierra puntoYcoma;
+
+EXPRESION: 
+        /*Operaciones aritmeticas*/
+        EXPRESION mas EXPRESION {}
+        |       EXPRESION menos EXPRESION {}
+        |       EXPRESION multiplicacion EXPRESION {}
+        |       EXPRESION division EXPRESION {}
+        |       EXPRESION exponente EXPRESION {}
+        |       EXPRESION modulo EXPRESION {}
+        |       menos EXPRESION %prec umenos {}
+        |       parentesisAbre EXPRESION parentesisCierra {}
+        /*Operaciones condicionales*/
+        |       EXPRESION igualacion EXPRESION {}
+        |       EXPRESION diferenciacion EXPRESION {}
+        |       EXPRESION menorQue EXPRESION {}
+        |       EXPRESION mayorQue EXPRESION {}
+        |       EXPRESION mayorIgualQue EXPRESION {}
+        |       EXPRESION menorIgualQue EXPRESION {}
+        |       not EXPRESION {}
+        /*LLamada de función que devuelve un valor*/
+        |       identificador parentesisAbre LISTA_VALORES parentesisCierra puntoYcoma {}
+        /*Casteos*/
+        |       parentesisAbre TIPO parentesisCierra EXPRESION {} 
+        /*Funciones reservadas del lenguaje*/
+        |       toLower parentesisAbre EXPRESION parentesisCierra {}
+        |       toUpper parentesisAbre EXPRESION parentesisCierra {}
+        |       round parentesisAbre EXPRESION parentesisCierra {}
+        |       length parentesisAbre EXPRESION parentesisCierra {}
+        |       typeOf parentesisAbre EXPRESION parentesisCierra {}
+        |       tostring parentesisAbre EXPRESION parentesisCierra {}
+        |       toCharArray parentesisAbre EXPRESION parentesisCierra {}
+        /*Valores que pueden estar en las expresiones*/
+        |       cadena {}
+        |       entero {}
+        |       decimal {}
+        |       caracter {}
+        |       true {}
+        |       false {}
+        |       identificador {}
+        /*recordar que estos van porque se pueden asignar a una variable esto sin afectar a la variable que se incrementa o decrementa EJEM: int a = 10; int b = a++; */
+        |       EXPRESION mas mas {}
+        |       EXPRESION menos menos {}
+;
+
+VALOR: EXPRESION {} ;
+
+TIPO: 
+    int {}
+    |   double {}
+    |   boolean {}
+    |   char {}
+    |   string {}
+;
