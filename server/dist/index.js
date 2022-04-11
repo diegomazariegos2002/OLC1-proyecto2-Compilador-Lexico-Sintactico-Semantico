@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 //Importando la consola
-const Consola_1 = require("./singleton_consola/Consola");
+const Consola_js_1 = require("./singleton_consola/Consola.js");
 //Importando las clases necesarias del lenguaje
-const TablaDeSimbolos_1 = require("./simbolos/TablaDeSimbolos");
+const TablaDeSimbolos_js_1 = require("./simbolos/TablaDeSimbolos.js");
 /* Aquí van los imports de mis librerías*/
 /* Librerías para servidor */
 var express = require('express');
@@ -23,9 +23,10 @@ var incremental = 0;
 /* ======================== PETICIONES DEL PROYECTO ========================*/
 app.post('/analizar', function (request, response) {
     var texto = request.body.dato.toString;
-    var consola = Consola_1.Consola.getInstance();
+    var consola = Consola_js_1.Consola.getInstance();
+    texto += 0;
     const ast = parser.parse(texto.toString);
-    const tablaInicial = new TablaDeSimbolos_1.TablaDeSimbolos(null);
+    const tablaInicial = new TablaDeSimbolos_js_1.TablaDeSimbolos(null);
     //recorrer las instrucciones y ejecutarlas
     for (const instruccion of ast) {
         try {

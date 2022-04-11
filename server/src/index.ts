@@ -1,7 +1,7 @@
 //Importando la consola
-import { Consola } from "./singleton_consola/Consola";
+import { Consola } from "./singleton_consola/Consola.js";
 //Importando las clases necesarias del lenguaje
-import { TablaDeSimbolos } from "./simbolos/TablaDeSimbolos";
+import { TablaDeSimbolos } from "./simbolos/TablaDeSimbolos.js";
 
 /* Aquí van los imports de mis librerías*/
 /* Librerías para servidor */
@@ -28,7 +28,6 @@ var incremental = 0;
 app.post('/analizar', function(request:any, response:any){
     var texto = request.body.dato.toString;
     var consola = Consola.getInstance();
-    
     const ast = parser.parse(texto.toString);
     const tablaInicial = new TablaDeSimbolos(null);
 
