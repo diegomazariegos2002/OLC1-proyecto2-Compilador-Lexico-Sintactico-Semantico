@@ -94,7 +94,16 @@
 /* Comienzo analizador sintáctico */
 // Importaciones
 %{
-	
+        //Importanción de instrucciones
+	const { Print } = require('../instrucciones/Print.ts');
+
+        //Importación de expresiones
+        const { Literal } = require('../expresiones/Literal.ts');
+        const { Identificador } = require('../expresiones/Identificador.ts');
+
+        //Importación de herramientas auxiliares
+        const { Consola } = require('../singleton_consola/Consola.ts');
+        const { ExceptionError } = require('../excepciones/ExceptionError.ts');
 %}
 
 /* Precedencias */
@@ -115,12 +124,12 @@
 %% /* Producciones */
 
 INICIO: 
-        ENTRADAS EOF {}
+        ENTRADAS EOF { return $1; }
 ;
 
 ENTRADAS: 
-        ENTRADAS ENTRADA {}
-        |  ENTRADA{}
+        ENTRADAS ENTRADA { $1.push($2); $$ = $1; }
+        |  ENTRADA{ $$ = [$1]; }
 ;
 
 ENTRADA:    
@@ -129,7 +138,7 @@ ENTRADA:
         |   RUN {}
         |   DECLARACION_VAR {}
         |   DECLARACION_VECT {}
-        |   INSTRUCCIONES {}
+        |   INSTRUCCION {$$ = [$1]}
 ;
 
 FUNCION: 
@@ -173,8 +182,8 @@ LISTA_VALORES:
 ;
 
 INSTRUCCIONES:
-        INSTRUCCIONES INSTRUCCION {}
-        | INSTRUCCION {}
+        INSTRUCCIONES INSTRUCCION { $1.push($2); $$ = $1; }
+        | INSTRUCCION { $$ = [$1];}
 ;
 
 INSTRUCCION: 
@@ -189,7 +198,7 @@ INSTRUCCION:
         |       INCREMENTO {}
         |       DECREMENTO {}
         |       LLAMADA {}
-        |       PRINT {}
+        |       PRINT {$$ = $1;}
         |       PRINTLN {}
 ;
 
@@ -198,12 +207,18 @@ WHILE:;
 DO_WHILE:;
 IF:;
 SWITCH:;
-ASIGNACION:;
-INCREMENTO:;
-DECREMENTO:;
+ASIGNACION: identificador igual EXPRESION puntoYcoma;
+INCREMENTO: identificador incremento puntoYcoma {};
+DECREMENTO: identificador decremento puntoYcoma {};
 LLAMADA:;
-PRINT: print parentesisAbre EXPRESION parentesisCierra puntoYcoma;
-PRINTLN:print parentesisAbre EXPRESION parentesisCierra puntoYcoma;
+PRINT:
+        print parentesisAbre EXPRESION parentesisCierra puntoYcoma { $$ = new Print($3, @1.first_line, @1.first_column);} 
+        |       print parentesisAbre parentesisCierra puntoYcoma { $$ = new Print(null, @1.first_line, @1.first_column);} 
+;
+PRINTLN:
+        print parentesisAbre EXPRESION parentesisCierra puntoYcoma
+        |       print parentesisAbre parentesisCierra puntoYcoma
+;
 
 EXPRESION: 
         /*Operaciones aritmeticas*/
@@ -236,16 +251,16 @@ EXPRESION:
         |       tostring parentesisAbre EXPRESION parentesisCierra {}
         |       toCharArray parentesisAbre EXPRESION parentesisCierra {}
         /*Valores que pueden estar en las expresiones*/
-        |       cadena {}
-        |       entero {}
-        |       decimal {}
-        |       caracter {}
-        |       true {}
-        |       false {}
-        |       identificador {}
+        |       cadena { $$ = new Literal($1, Type.STRING, @1.first_line, @1.first_column); }
+        |       entero { $$ = new Literal($1, Type.INT, @1.first_line, @1.first_column); }
+        |       decimal { $$ = new Literal($1, Type.DOUBLE, @1.first_line, @1.first_column); }
+        |       caracter { $$ = new Literal($1, Type.CHAR, @1.first_line, @1.first_column); }
+        |       true { $$ = new Literal($1, Type.BOOLEAN, @1.first_line, @1.first_column); }
+        |       false { $$ = new Literal($1, Type.BOOLEAN, @1.first_line, @1.first_column); }
+        |       identificador { $$ = new Identificador($1, @1.first_line, @1.first_column);}
         /*recordar que estos van porque se pueden asignar a una variable esto sin afectar a la variable que se incrementa o decrementa EJEM: int a = 10; int b = a++; */
-        |       EXPRESION mas mas {}
-        |       EXPRESION menos menos {}
+        |       EXPRESION incremento {}
+        |       EXPRESION decremento {}
 ;
 
 VALOR: EXPRESION {} ;

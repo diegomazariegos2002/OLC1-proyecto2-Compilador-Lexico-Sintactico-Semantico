@@ -5,6 +5,11 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 const routes: Routes = [
 
     {
+      path: '',
+      redirectTo: 'index',
+      pathMatch: 'full'
+    },
+    {
       path: 'index',
       component: DashboardComponent
     }

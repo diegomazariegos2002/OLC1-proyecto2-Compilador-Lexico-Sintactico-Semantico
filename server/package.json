@@ -9,7 +9,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "node app.js",
-    "runTsc": "npx nodemon src/pruebas/prueba.ts",
+    "runTsc": "npx nodemon src/index.ts",
     "jison": "jison ./src/analizadores/gramatica.jison && move gramatica.js ./src/analizadores/",
     "start": "nodemon app.js"
   },
