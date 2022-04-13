@@ -5,11 +5,11 @@ import { Consola } from "../consola_singleton/Consola";
 import { Expresion } from "../abstracto/Expresion";
 
 /**
- * Clase Print que se encarga de realizar la instrucción de Print(Retorno);
+ * Clase Println que se encarga de realizar la instrucción de Print(Retorno + "\n");
  * Siempre que Expresión sea de Retorno entero, doble, booleano, cadena y carácter.
  */
 
-export class Print extends Instruccion {
+export class Println extends Instruccion {
 
     constructor(
         public value: Expresion,
@@ -24,7 +24,7 @@ export class Print extends Instruccion {
         const consola = Consola.getInstance()
         const Retorno = this.value?.execute(Environment);
         if (Retorno != null) {
-            if (Retorno.type != Tipo.ERROR) consola.setConsola(Retorno.value);
+            if (Retorno.type != Tipo.ERROR) consola.setConsola(Retorno.value + "\n");
         }
     }
 

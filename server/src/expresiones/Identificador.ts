@@ -1,8 +1,8 @@
-import { Expresion } from "../abstract/Expresion"
-import { TablaDeSimbolos } from "../simbolos/TablaDeSimbolos"
-import { Retorno, Type } from "../abstract/Retorno"
-import { ExceptionError } from "../excepciones/ExceptionError"
-
+import { Expresion } from "../abstracto/Expresion"
+import { Environment } from "../simbolo/Environment"
+import { Retorno, Tipo } from "../abstracto/Retorno"
+import { Excepcion } from "../errores/Excepcion"
+import { Consola } from "../consola_singleton/Consola"
 
 export class Identificador extends Expresion {
 
@@ -14,17 +14,20 @@ export class Identificador extends Expresion {
         super(line, column)
     }
 
-    public execute(tablaDeSimbolos: TablaDeSimbolos): Retorno {
+    public execute(Environment: Environment): Retorno {
 
         //traer la variable
-        const value = tablaDeSimbolos.get_variable(this.id)
+        const value = Environment.get_variable(this.id)
 
-        if (value == null) {
-            //verificar si es un array
-            throw new ExceptionError("Semantico", `Variable '${this.id}' no encontrada `, this.line, this.column)
+        if (value == null) { //verificar si existe la variable en la tabla de simbolos
+            //si no existe entonces es un error semantico
+            var consola = Consola.getInstance();
+            const error = new Excepcion("Error semántico", "no existe una variable con ese nombre", this.line, this.column);
+            consola.set_Error(error);
+            return {value: null, type: Tipo.ERROR}
         }
 
-        return { value: value.value, type: value.type };
+        return { value: value.valor, type: value.tipo };
     }
 
     public ast() {

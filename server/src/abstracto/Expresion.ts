@@ -1,5 +1,5 @@
 import { Retorno } from "./Retorno"
-import { TablaDeSimbolos } from "../simbolos/TablaDeSimbolos"
+import { Environment } from "../simbolo/Environment"
 
 export abstract class Expresion {
 
@@ -8,6 +8,6 @@ export abstract class Expresion {
         this.column = column + 1
     }
 
-    public abstract execute(tablaDeSimbolos: TablaDeSimbolos): Retorno
+    public abstract execute(Environment: Environment): Retorno
     public abstract ast(): string
 }

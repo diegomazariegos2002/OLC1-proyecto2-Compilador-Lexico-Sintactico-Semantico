@@ -1,4 +1,4 @@
-import { TablaDeSimbolos } from "../simbolos/TablaDeSimbolos"
+import { Environment } from "../simbolo/Environment"
 
 export abstract class Instruccion {
 
@@ -7,7 +7,7 @@ export abstract class Instruccion {
         this.column = column + 1
     }
 
-    public abstract execute(tablaDeSimbolos: TablaDeSimbolos): any
+    public abstract execute(Environment: Environment): any
     public abstract ast(): void
 
 }

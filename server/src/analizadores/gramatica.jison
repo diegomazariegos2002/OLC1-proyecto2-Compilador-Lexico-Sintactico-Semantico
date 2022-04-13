@@ -12,7 +12,16 @@
 
 %% 
 
-\"[\"^\"]*\"              return 'cadena'
+["]				{ cadena = ''; this.begin("string"); }
+<string>[^"\\]+			{ cadena += yytext; }
+<string>"\\\""			{ cadena += "\""; }
+<string>"\n"			{ cadena += "\n"; }
+<string>\s			{ cadena += " ";  }
+<string>"\t"			{ cadena += "\t"; }
+<string>"\\\\"			{ cadena += "\\"; }
+<string>"\'"			{ cadena += "\'"; }
+<string>"\r"			{ cadena += "\r"; }
+<string>["]		        { yytext = cadena; this.popState(); return 'cadena'; }
 
 \s+                                 /* Espacio en blanco (los ignora) */
 "//"[^\r\n]*[\r|\n|\r\n]?			// Comentario de una linea (los ignora)
@@ -45,7 +54,7 @@
 "toUpper"               return 'toUpper'
 "Round"                 return 'round'
 "length"                return 'length'
-"typeof"                return 'typeOf'
+"Tipoof"                return 'TipoOf'
 "tostring"              return 'to_String'
 "toCharArray"           return 'toCharArray'
 "run"                   return 'run'
@@ -94,16 +103,17 @@
 /* Comienzo analizador sintáctico */
 // Importaciones
 %{
-        //Importanción de instrucciones
+	//Importanción de instrucciones
 	const { Print } = require('../instrucciones/Print.ts');
-
+        const { Println } = require('../instrucciones/Println.ts');
+        const { Declaracion_Var } = require('../instrucciones/Declaracion_Var.ts');
         //Importación de expresiones
         const { Literal } = require('../expresiones/Literal.ts');
         const { Identificador } = require('../expresiones/Identificador.ts');
-
         //Importación de herramientas auxiliares
-        const { Consola } = require('../singleton_consola/Consola.ts');
-        const { ExceptionError } = require('../excepciones/ExceptionError.ts');
+        const { Consola } = require('../consola_singleton/Consola.ts');
+        const { Tipo } = require('../abstracto/Retorno.ts');
+        const { Excepcion } = require('../errores/Excepcion.ts');
 %}
 
 /* Precedencias */
@@ -128,8 +138,8 @@ INICIO:
 ;
 
 ENTRADAS: 
-        ENTRADAS ENTRADA { $1.push($2); $$ = $1; }
-        |  ENTRADA{ $$ = [$1]; }
+        ENTRADAS ENTRADA {  if($2!=="") $1.push($2); $$=$1; }
+        |  ENTRADA{ if($$!=="") $$=[$1]; else $$=[]; }
 ;
 
 ENTRADA:    
@@ -138,7 +148,7 @@ ENTRADA:
         |   RUN {}
         |   DECLARACION_VAR {}
         |   DECLARACION_VECT {}
-        |   INSTRUCCION {$$ = [$1]}
+        |   INSTRUCCION { $$ = $1; }
 ;
 
 FUNCION: 
@@ -161,13 +171,13 @@ RUN:
 ;
 
 DECLARACION_VAR: 
-            TIPO LISTA_VARIABLES puntoYcoma {}
-            |   TIPO LISTA_VARIABLES igual EXPRESION puntoYcoma {}
+            TIPO LISTA_VARIABLES puntoYcoma { $$ = new Declaracion_Var($2, null, $1, @1.first_line, @1.first_column); }
+            |   TIPO LISTA_VARIABLES igual EXPRESION puntoYcoma { $$ = new Declaracion_Var($2, $4, $1, @1.first_line, @1.first_column); }
 ;
 
 LISTA_VARIABLES: 
-                LISTA_VARIABLES coma identificador {}
-                |   identificador {}
+                LISTA_VARIABLES coma identificador { $1.push($3); $$ = $1; }
+                |   identificador { $$ = [$1]; }
 ;
 
 DECLARACION_VECT: 
@@ -182,8 +192,8 @@ LISTA_VALORES:
 ;
 
 INSTRUCCIONES:
-        INSTRUCCIONES INSTRUCCION { $1.push($2); $$ = $1; }
-        | INSTRUCCION { $$ = [$1];}
+        INSTRUCCIONES INSTRUCCION {}
+        | INSTRUCCION {}
 ;
 
 INSTRUCCION: 
@@ -200,6 +210,12 @@ INSTRUCCION:
         |       LLAMADA {}
         |       PRINT {$$ = $1;}
         |       PRINTLN {}
+        |       error ';' {
+                        console.log("Error sintáctico en la línea: "+(yylineno + 1));
+                        var consola = Consola.getInstance();
+                        const error = new Excepcion("Error sintáctico", "El caracter "+ (this.terminals_[symbol] || symbol)+" no se esperaba en esta posición.", this._$.first_line, this._$.first_column+1);
+                        consola.set_Error(error);
+        }
 ;
 
 FOR:;
@@ -208,17 +224,11 @@ DO_WHILE:;
 IF:;
 SWITCH:;
 ASIGNACION: identificador igual EXPRESION puntoYcoma;
-INCREMENTO: identificador incremento puntoYcoma {};
-DECREMENTO: identificador decremento puntoYcoma {};
+INCREMENTO: identificador incremento puntoYcoma;
+DECREMENTO: identificador decremento puntoYcoma;
 LLAMADA:;
-PRINT:
-        print parentesisAbre EXPRESION parentesisCierra puntoYcoma { $$ = new Print($3, @1.first_line, @1.first_column);} 
-        |       print parentesisAbre parentesisCierra puntoYcoma { $$ = new Print(null, @1.first_line, @1.first_column);} 
-;
-PRINTLN:
-        print parentesisAbre EXPRESION parentesisCierra puntoYcoma
-        |       print parentesisAbre parentesisCierra puntoYcoma
-;
+PRINT: print parentesisAbre EXPRESION parentesisCierra puntoYcoma { $$ = new Print($3, @1.first_line, @1.first_column); };
+PRINTLN:println parentesisAbre EXPRESION parentesisCierra puntoYcoma { $$ = new Println($3, @1.first_line, @1.first_column); };
 
 EXPRESION: 
         /*Operaciones aritmeticas*/
@@ -247,16 +257,16 @@ EXPRESION:
         |       toUpper parentesisAbre EXPRESION parentesisCierra {}
         |       round parentesisAbre EXPRESION parentesisCierra {}
         |       length parentesisAbre EXPRESION parentesisCierra {}
-        |       typeOf parentesisAbre EXPRESION parentesisCierra {}
+        |       TipoOf parentesisAbre EXPRESION parentesisCierra {}
         |       tostring parentesisAbre EXPRESION parentesisCierra {}
         |       toCharArray parentesisAbre EXPRESION parentesisCierra {}
         /*Valores que pueden estar en las expresiones*/
-        |       cadena { $$ = new Literal($1, Type.STRING, @1.first_line, @1.first_column); }
-        |       entero { $$ = new Literal($1, Type.INT, @1.first_line, @1.first_column); }
-        |       decimal { $$ = new Literal($1, Type.DOUBLE, @1.first_line, @1.first_column); }
-        |       caracter { $$ = new Literal($1, Type.CHAR, @1.first_line, @1.first_column); }
-        |       true { $$ = new Literal($1, Type.BOOLEAN, @1.first_line, @1.first_column); }
-        |       false { $$ = new Literal($1, Type.BOOLEAN, @1.first_line, @1.first_column); }
+        |       cadena { $$ = new Literal($1, Tipo.STRING, @1.first_line, @1.first_column); }
+        |       entero { $$ = new Literal($1, Tipo.INT, @1.first_line, @1.first_column); }
+        |       decimal { $$ = new Literal($1, Tipo.DOUBLE, @1.first_line, @1.first_column); }
+        |       caracter { $$ = new Literal($1, Tipo.CHAR, @1.first_line, @1.first_column); }
+        |       true { $$ = new Literal($1, Tipo.BOOLEAN, @1.first_line, @1.first_column); }
+        |       false { $$ = new Literal($1, Tipo.BOOLEAN, @1.first_line, @1.first_column); }
         |       identificador { $$ = new Identificador($1, @1.first_line, @1.first_column);}
         /*recordar que estos van porque se pueden asignar a una variable esto sin afectar a la variable que se incrementa o decrementa EJEM: int a = 10; int b = a++; */
         |       EXPRESION incremento {}
@@ -266,9 +276,9 @@ EXPRESION:
 VALOR: EXPRESION {} ;
 
 TIPO: 
-    int {}
-    |   double {}
-    |   boolean {}
-    |   char {}
-    |   string {}
+    int { $$ = Tipo.INT;}
+    |   double { $$ = Tipo.DOUBLE; }
+    |   boolean { $$ = Tipo.BOOLEAN; }
+    |   char { $$ = Tipo.CHAR; }
+    |   string { $$ = Tipo.STRING; }
 ;

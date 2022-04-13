@@ -8,6 +8,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "debug": "npx nodemon --exec node --inspect --require ts-node/register src/index.ts",
     "dev": "node app.js",
     "runTsc": "npx nodemon src/index.ts",
     "jison": "jison ./src/analizadores/gramatica.jison && move gramatica.js ./src/analizadores/",

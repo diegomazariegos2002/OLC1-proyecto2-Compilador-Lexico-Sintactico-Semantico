@@ -1,10 +1,7 @@
-//Importando la consola
-import { Consola } from "./singleton_consola/Consola.js";
-//Importando las clases necesarias del lenguaje
-import { TablaDeSimbolos } from "./simbolos/TablaDeSimbolos.js";
+import { Consola } from "./consola_singleton/Consola";
+import { Environment } from "./simbolo/Environment";
 
 /* Aquí van los imports de mis librerías*/
-/* Librerías para servidor */
 var express = require('express');
 const res = require('express/lib/response');
 var morgan = require('morgan');
@@ -23,33 +20,35 @@ const parser = require('./analizadores/gramatica.js');
 var puerto = 8080;
 var incremental = 0;
 
-/* ======================== PETICIONES DEL PROYECTO ========================*/
-
 app.post('/analizar', function(request:any, response:any){
-    var texto = request.body.dato.toString;
+    
+    var entrada = request.body.dato;
+    console.log("Estoy analizando");
+    console.log(entrada);
+    const ast = parser.parse(entrada);
     var consola = Consola.getInstance();
-    const ast = parser.parse(texto.toString);
-    const tablaInicial = new TablaDeSimbolos(null);
+    consola.cleanConsola();
 
-    //recorrer las instrucciones y ejecutarlas
-    for (const instruccion of ast) {
-        try {
-            instruccion.execute(tablaInicial);
-        } catch (error) {
-            consola.add_error(error)
+    const env = new Environment(null); 
+
+    for(const instruccion of ast){
+        try{
+            instruccion.execute(env)
+        }catch(error){
+            console.log("soy un error")
         }
     }
 
-    var Salida = 
+    /* Salida de datos */ 
+    var salida = 
     {
-        Consola: consola.get_consola(),
-        Reporte: ast.toString()
+        entrada: entrada,
+        consola: consola.getConsola(),
+        resultado: ast
     }
-
-    response.json(Salida);
+    response.json(salida)
 })
 
-/* ======================== PETICIONES DE PRUEBA ========================*/ 
 app.listen(puerto, function(){
     console.log('app escuchando en el puerto 8080')
 })
@@ -70,6 +69,3 @@ app.post('/setIncremental', function(request:any, response:any){
     incremental = request.body.dato;
     response.json({msg: "Operación con éxito!!!"})
 })
-
-
-

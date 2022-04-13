@@ -1,11 +1,11 @@
-import { Expresion } from "../abstract/Expresion"
-import { Retorno, Type } from "../abstract/Retorno"
+import { Expresion } from "../abstracto/Expresion"
+import { Retorno, Tipo } from "../abstracto/Retorno"
 
 export class Literal extends Expresion {
 
     constructor(
         private value: any,
-        private type: Type,
+        private tipo: Tipo,
         line: number,
         column: number
     ) {
@@ -13,30 +13,30 @@ export class Literal extends Expresion {
     }
 
     public execute(): Retorno {
-        if (this.type == Type.INT)
-            return { value: Number(this.value), type: Type.INT }
-        else if (this.type == Type.DOUBLE)
-            return { value: this.value, type: Type.DOUBLE }
-        else if (this.type == Type.STRING)
-            return { value: this.value, type: Type.STRING }
-        else if (this.type == Type.CHAR)
-            return { value: this.value, type: Type.CHAR }
-        else if (this.type == Type.BOOLEAN) {
+        if (this.tipo == Tipo.INT)
+            return { value: Number(this.value), type: Tipo.INT }
+        else if (this.tipo == Tipo.DOUBLE)
+            return { value: this.value, type: Tipo.DOUBLE }
+        else if (this.tipo == Tipo.STRING)
+            return { value: this.value, type: Tipo.STRING }
+        else if (this.tipo == Tipo.CHAR)
+            return { value: this.value, type: Tipo.CHAR }
+        else if (this.tipo == Tipo.BOOLEAN) {
             if (this.value.toLowerCase() == "true") { //para comparar sin importar las mayusculas y así.
-                return { value: Boolean(true), type: Type.BOOLEAN }
+                return { value: Boolean(true), type: Tipo.BOOLEAN }
             }
             else {
-                return { value: Boolean(false), type: Type.BOOLEAN }
+                return { value: Boolean(false), type: Tipo.BOOLEAN }
             }
         }
         else
-            return { value: this.value, type: Type.error }
+            return { value: this.value, type: Tipo.ERROR }
 
     }
     public ast() {
 
         const nombre = `node_${this.line}_${this.column}_`
-        if (this.type == Type.STRING) return `
+        if (this.tipo == Tipo.STRING) return `
         ${nombre};
         ${nombre}[label="\\"${this.value.toString()}\\""];`
 

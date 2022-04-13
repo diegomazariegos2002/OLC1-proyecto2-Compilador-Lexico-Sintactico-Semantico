@@ -1,9 +1,9 @@
-import { Symbol } from "./Simbolo";
-import { Type } from "../abstract/Retorno"; 
+import { Simbolo } from "./Simbolo";
+import { Tipo } from "../abstracto/Retorno"; 
 
-export class TablaDeSimbolos{
+export class Environment{
     /**Mapa de variables */
-    public variables: Map<String, Symbol>
+    public variables: Map<String, Simbolo>
 
     /**
      * Cuando uno crea una tabla de simbolos puede ser la primera y por lo tanto no tendría 
@@ -11,7 +11,7 @@ export class TablaDeSimbolos{
      * anterior para esta tabla de simbolos por lo que se crea su respectiva variable "anterior".
      * @param anterior 
      */
-    constructor(public anterior: TablaDeSimbolos | null) {
+    constructor(public anterior: Environment | null) {
         this.variables = new Map();
     }
 
@@ -19,17 +19,17 @@ export class TablaDeSimbolos{
      * Metodo para guardar una VARIABLE en la tabla de simbolos
      * @param id nombre de la variable
      * @param valor valor de la variable
-     * @param type tipo de dato de la variable
-     * @param condicion si es editable
+     * @param tipo tipo de dato de la variable
+     * @param editable para validar si la variable es editable o no como en el caso de métodos y funciones que no son editables
      * @returns boolan si se efectuo el almacenamiento de la variable
      */
-    public guardar_variable(nombre: string, valor: any, type: Type): boolean {
+    public guardar_variable(nombre: string, valor: any, tipo: Tipo, editable: boolean): boolean {
 
         //revisar que el nombre de la nueva variable se encuentre disponible
         if (this.revisarRepetido(nombre)) return false
 
         //agrega la variable al MAP 
-        this.variables.set(nombre, new Symbol(valor, nombre, type))
+        this.variables.set(nombre, new Simbolo(valor, nombre, tipo, editable))
         return true
     }
 
@@ -40,13 +40,13 @@ export class TablaDeSimbolos{
      */
     public actualizar_variable(nombre: string, valor: any) {
 
-        let env: TablaDeSimbolos | null = this;
+        let env: Environment | null = this;
 
         while (env != null) {
             if (env.variables.has(nombre)) {
                 for (let entry of Array.from(env.variables.entries())) {
                     if (entry[0] == nombre) {
-                        entry[1].value = valor;
+                        entry[1].valor = valor;
                         return
                     }
                 }
@@ -56,12 +56,12 @@ export class TablaDeSimbolos{
     }
 
     /**
-     * Metodo para retornar una VARIABLE como [Symbol]  
+     * Metodo para retornar una VARIABLE como [Simbolo]  
      * @param nombre buscar el nombre de la variable en todos los entornos 
-     * @returns Un objeto [Symbol] que tiene la informacion de la variable
+     * @returns Un objeto [Simbolo] que tiene la informacion de la variable
      */
-    public get_variable(nombre: string): Symbol | undefined | null {
-        let tablaActual: TablaDeSimbolos | null = this;
+    public get_variable(nombre: string): Simbolo | undefined | null {
+        let tablaActual: Environment | null = this;
         while (tablaActual != null) {
             if (tablaActual.variables.has(nombre)) return tablaActual.variables.get(nombre);
             tablaActual = tablaActual.anterior;
