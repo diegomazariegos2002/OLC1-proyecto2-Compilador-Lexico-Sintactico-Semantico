@@ -7,6 +7,11 @@ const routes: Routes = [
     {
       path: 'index',
       component: DashboardComponent
+    },
+    {
+      path: '',
+      redirectTo: 'index',
+      pathMatch: 'full'
     }
 
 ];
