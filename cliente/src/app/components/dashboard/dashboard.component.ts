@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from 'src/app/services/user.service';
-
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -10,7 +9,29 @@ export class DashboardComponent implements OnInit {
 
   constructor(private service: UserService) { }
 
+  consola:any = 
+  {
+    entrada:'',
+    salida:''
+  }
+
   ngOnInit(): void {
+  }
+
+  compilar(): any{
+    this.service.compilar(this.consola).subscribe(
+      //si la petición sale correcta
+      (res: any)=>
+      {
+        console.log(res);
+        const JsonRespuesta = JSON.parse(JSON.stringify(res));
+        if(this.consola.salida !== undefined){
+          this.consola.salida = JsonRespuesta.consola;
+        }
+      }, 
+      //Si sucede un error en la petición
+      (err)=> {console.log(err)}
+    )
   }
 
   getData(){

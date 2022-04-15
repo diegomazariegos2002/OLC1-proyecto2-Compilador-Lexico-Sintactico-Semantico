@@ -4,7 +4,7 @@ import { HttpClientModule } from '@angular/common/http'; //Se añadio esto
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
-
+import { FormsModule } from '@angular/forms';
 @NgModule({
   declarations: [
     AppComponent,
@@ -13,7 +13,8 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule // se añadio esto, sino lo añadimos nos va a tirar error cuando hagamos peticiones
+    FormsModule,      // Se añadio para poder recibir y enviar información a los textAreas.
+    HttpClientModule // Se añadio esto, sino lo añadimos nos va a tirar error cuando hagamos peticiones.
   ],
   providers: [],
   bootstrap: [AppComponent]

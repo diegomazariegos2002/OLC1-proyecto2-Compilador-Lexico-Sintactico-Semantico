@@ -96,7 +96,7 @@
 [0-9]+					return 'entero'
 
 <<EOF>>               return 'EOF'
-.                     { errores.push({ tipo: "Léxico", error: yytext, linea: yylloc.first_line, columna: yylloc.first_column+1 }); return 'invalido'; }
+.                     { console.log("Error léxico") }
 
 /lex //fin analizador léxico
 
@@ -135,11 +135,13 @@
 
 INICIO: 
         ENTRADAS EOF { return $1; }
+        | EOF { return ""; }
 ;
 
 ENTRADAS: 
         ENTRADAS ENTRADA {  if($2!=="") $1.push($2); $$=$1; }
         |  ENTRADA{ if($$!=="") $$=[$1]; else $$=[]; }
+        | error { console.error('Este es un error sintáctico') }
 ;
 
 ENTRADA:    

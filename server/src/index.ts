@@ -22,7 +22,7 @@ var incremental = 0;
 
 app.post('/analizar', function(request:any, response:any){
     
-    var entrada = request.body.dato;
+    var entrada = request.body.entrada;
     console.log("Estoy analizando");
     console.log(entrada);
     const ast = parser.parse(entrada);
@@ -44,6 +44,7 @@ app.post('/analizar', function(request:any, response:any){
     {
         entrada: entrada,
         consola: consola.getConsola(),
+        errores: consola.get_Errores(),
         resultado: ast
     }
     response.json(salida)
