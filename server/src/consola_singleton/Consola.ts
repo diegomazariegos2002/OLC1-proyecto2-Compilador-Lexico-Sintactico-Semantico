@@ -42,7 +42,7 @@ export class Consola {
     }
 
     public set_Error(data: Excepcion) {
-        this.consola += "Error: " + data.titulo + ", " + data.descripcion + ", en la línea: " + data.linea + ", en la columna: " + data.columna + ".";
+        this.consola += "Error: " + data.titulo + ", " + data.descripcion + ", en la línea: " + data.linea + ", en la columna: " + data.columna + ".\n";
         this.errores.push(data);
     }
 

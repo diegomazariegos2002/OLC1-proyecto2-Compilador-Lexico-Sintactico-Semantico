@@ -107,9 +107,11 @@
 	const { Print } = require('../instrucciones/Print.ts');
         const { Println } = require('../instrucciones/Println.ts');
         const { Declaracion_Var } = require('../instrucciones/Declaracion_Var.ts');
+        const { Asignacion } = require('../instrucciones/Asignacion.ts');
         //Importación de expresiones
         const { Literal } = require('../expresiones/Literal.ts');
         const { Identificador } = require('../expresiones/Identificador.ts');
+        const { Suma } = require('../expresiones/aritmetica/Suma.ts');
         //Importación de herramientas auxiliares
         const { Consola } = require('../consola_singleton/Consola.ts');
         const { Tipo } = require('../abstracto/Retorno.ts');
@@ -206,7 +208,7 @@ INSTRUCCION:
         |       DO_WHILE {}
         |       IF {}
         |       SWITCH {}
-        |       ASIGNACION {}
+        |       ASIGNACION { $$ = $1; }
         |       INCREMENTO {}
         |       DECREMENTO {}
         |       LLAMADA {}
@@ -225,7 +227,7 @@ WHILE:;
 DO_WHILE:;
 IF:;
 SWITCH:;
-ASIGNACION: identificador igual EXPRESION puntoYcoma;
+ASIGNACION: identificador igual EXPRESION puntoYcoma { $$ = new Asignacion($1, $3, @1.first_line, @1.first_column); };
 INCREMENTO: identificador incremento puntoYcoma;
 DECREMENTO: identificador decremento puntoYcoma;
 LLAMADA:;
@@ -234,7 +236,7 @@ PRINTLN:println parentesisAbre EXPRESION parentesisCierra puntoYcoma { $$ = new 
 
 EXPRESION: 
         /*Operaciones aritmeticas*/
-        EXPRESION mas EXPRESION {}
+        EXPRESION mas EXPRESION { $$ = new Suma($1, $3, @1.first_line, @1.first_column); }
         |       EXPRESION menos EXPRESION {}
         |       EXPRESION multiplicacion EXPRESION {}
         |       EXPRESION division EXPRESION {}

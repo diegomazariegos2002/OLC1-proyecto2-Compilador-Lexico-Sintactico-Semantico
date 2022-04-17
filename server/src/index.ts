@@ -34,8 +34,9 @@ app.post('/analizar', function(request:any, response:any){
     for(const instruccion of ast){
         try{
             instruccion.execute(env)
+            instruccion.ast()
         }catch(error){
-            console.log("soy un error")
+            console.log("soy un error"+error)
         }
     }
 
@@ -45,6 +46,7 @@ app.post('/analizar', function(request:any, response:any){
         entrada: entrada,
         consola: consola.getConsola(),
         errores: consola.get_Errores(),
+        ast: consola.get_Ast(),
         resultado: ast
     }
     response.json(salida)

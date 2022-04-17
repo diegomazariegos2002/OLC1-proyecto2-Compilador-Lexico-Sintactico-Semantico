@@ -1,4 +1,15 @@
 println("Hola ");
 println("mundo!!!");
 int a = 10;
+boolean bandera = true;
 println(a);
+a = 20;
+println(20);
+int b = 10;
+int c = 10 + 5;
+println(c);
+println(b + a);
+println(10 + 25);
+println(a);
+println(b);
+println(bandera + 5);

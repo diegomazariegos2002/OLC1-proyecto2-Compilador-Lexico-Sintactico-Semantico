@@ -98,7 +98,7 @@ break;
 case 5:
  console.error('Este es un error sintáctico') 
 break;
-case 11:
+case 11: case 40:
  this.$ = $$[$0]; 
 break;
 case 22:
@@ -124,11 +124,17 @@ case 46:
                         consola.set_Error(error);
         
 break;
+case 52:
+ this.$ = new Asignacion($$[$0-3], $$[$0-1], _$[$0-3].first_line, _$[$0-3].first_column); 
+break;
 case 56:
  this.$ = new Print($$[$0-2], _$[$0-4].first_line, _$[$0-4].first_column); 
 break;
 case 57:
  this.$ = new Println($$[$0-2], _$[$0-4].first_line, _$[$0-4].first_column); 
+break;
+case 58:
+ this.$ = new Suma($$[$0-2], $$[$0], _$[$0-2].first_line, _$[$0-2].first_column); 
 break;
 case 82:
  this.$ = new Literal($$[$0], Tipo.STRING, _$[$0].first_line, _$[$0].first_column); 
@@ -422,9 +428,11 @@ _handle_error:
 	const { Print } = require('../instrucciones/Print.ts');
         const { Println } = require('../instrucciones/Println.ts');
         const { Declaracion_Var } = require('../instrucciones/Declaracion_Var.ts');
+        const { Asignacion } = require('../instrucciones/Asignacion.ts');
         //Importación de expresiones
         const { Literal } = require('../expresiones/Literal.ts');
         const { Identificador } = require('../expresiones/Identificador.ts');
+        const { Suma } = require('../expresiones/aritmetica/Suma.ts');
         //Importación de herramientas auxiliares
         const { Consola } = require('../consola_singleton/Consola.ts');
         const { Tipo } = require('../abstracto/Retorno.ts');
