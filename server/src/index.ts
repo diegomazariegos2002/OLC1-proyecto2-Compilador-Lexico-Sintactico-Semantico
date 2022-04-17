@@ -30,15 +30,19 @@ app.post('/analizar', function(request:any, response:any){
     consola.cleanConsola();
 
     const env = new Environment(null); 
+    consola.set_Ast("digraph G { node[shape=box];nodeOriginal[label=\"<\\Lista_Instrucciones\\>\"];");
 
     for(const instruccion of ast){
         try{
+            // instruccion.ast()
+            // consola.set_Ast(`nodeOriginal->node_${instruccion.line}_${instruccion.column}_;`)
             instruccion.execute(env)
-            instruccion.ast()
         }catch(error){
             console.log("soy un error"+error)
         }
     }
+
+    console.log(consola.get_Ast());
 
     /* Salida de datos */ 
     var salida = 

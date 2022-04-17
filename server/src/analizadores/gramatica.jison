@@ -113,10 +113,14 @@
         const { Identificador } = require('../expresiones/Identificador.ts');
         const { Suma } = require('../expresiones/aritmetica/Suma.ts');
         const { Resta } = require('../expresiones/aritmetica/Resta.ts');
+        const { Multiplicacion } = require('../expresiones/aritmetica/Multiplicacion.ts');
+        const { Division } = require('../expresiones/aritmetica/Division.ts');
         //Importación de herramientas auxiliares
         const { Consola } = require('../consola_singleton/Consola.ts');
         const { Tipo } = require('../abstracto/Retorno.ts');
         const { Excepcion } = require('../errores/Excepcion.ts');
+
+        var consola = Consola.getInstance();
 %}
 
 /* Precedencias */
@@ -239,8 +243,8 @@ EXPRESION:
         /*Operaciones aritmeticas*/
         EXPRESION mas EXPRESION { $$ = new Suma($1, $3, @1.first_line, @1.first_column); }
         |       EXPRESION menos EXPRESION { $$ = new Resta($1, $3, @1.first_line, @1.first_column); }
-        |       EXPRESION multiplicacion EXPRESION {}
-        |       EXPRESION division EXPRESION {}
+        |       EXPRESION multiplicacion EXPRESION { $$ = new Multiplicacion($1, $3, @1.first_line, @1.first_column); }
+        |       EXPRESION division EXPRESION { $$ = new Division($1, $3, @1.first_line, @1.first_column); }
         |       EXPRESION exponente EXPRESION {}
         |       EXPRESION modulo EXPRESION {}
         |       menos EXPRESION %prec umenos {}
