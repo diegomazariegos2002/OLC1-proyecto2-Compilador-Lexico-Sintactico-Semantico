@@ -112,6 +112,7 @@
         const { Literal } = require('../expresiones/Literal.ts');
         const { Identificador } = require('../expresiones/Identificador.ts');
         const { Suma } = require('../expresiones/aritmetica/Suma.ts');
+        const { Resta } = require('../expresiones/aritmetica/Resta.ts');
         //Importación de herramientas auxiliares
         const { Consola } = require('../consola_singleton/Consola.ts');
         const { Tipo } = require('../abstracto/Retorno.ts');
@@ -237,7 +238,7 @@ PRINTLN:println parentesisAbre EXPRESION parentesisCierra puntoYcoma { $$ = new 
 EXPRESION: 
         /*Operaciones aritmeticas*/
         EXPRESION mas EXPRESION { $$ = new Suma($1, $3, @1.first_line, @1.first_column); }
-        |       EXPRESION menos EXPRESION {}
+        |       EXPRESION menos EXPRESION { $$ = new Resta($1, $3, @1.first_line, @1.first_column); }
         |       EXPRESION multiplicacion EXPRESION {}
         |       EXPRESION division EXPRESION {}
         |       EXPRESION exponente EXPRESION {}

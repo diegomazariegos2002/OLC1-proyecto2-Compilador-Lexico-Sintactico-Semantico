@@ -136,6 +136,9 @@ break;
 case 58:
  this.$ = new Suma($$[$0-2], $$[$0], _$[$0-2].first_line, _$[$0-2].first_column); 
 break;
+case 59:
+ this.$ = new Resta($$[$0-2], $$[$0], _$[$0-2].first_line, _$[$0-2].first_column); 
+break;
 case 82:
  this.$ = new Literal($$[$0], Tipo.STRING, _$[$0].first_line, _$[$0].first_column); 
 break;
@@ -433,6 +436,7 @@ _handle_error:
         const { Literal } = require('../expresiones/Literal.ts');
         const { Identificador } = require('../expresiones/Identificador.ts');
         const { Suma } = require('../expresiones/aritmetica/Suma.ts');
+        const { Resta } = require('../expresiones/aritmetica/Resta.ts');
         //Importación de herramientas auxiliares
         const { Consola } = require('../consola_singleton/Consola.ts');
         const { Tipo } = require('../abstracto/Retorno.ts');

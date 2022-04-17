@@ -13,3 +13,4 @@ println(10 + 25);
 println(a);
 println(b);
 println(bandera + 5);
+println(b - 10 + bandera);
