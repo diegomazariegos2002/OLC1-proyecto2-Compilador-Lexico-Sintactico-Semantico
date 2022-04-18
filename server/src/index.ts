@@ -35,8 +35,8 @@ app.post('/analizar', function(request:any, response:any){
     for(const instruccion of ast){
         try{
             consola.set_Ast(`nodeInicio->node_${instruccion.line}_${instruccion.column}_;\n`)
-            instruccion.ast()
             instruccion.execute(env)
+            instruccion.ast()
         }catch(error){
             console.log("soy un error"+error)
         }

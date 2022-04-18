@@ -145,6 +145,18 @@ break;
 case 61:
  this.$ = new Division($$[$0-2], $$[$0], _$[$0-2].first_line, _$[$0-2].first_column); 
 break;
+case 62:
+ this.$ = new Potencia($$[$0-2], $$[$0], _$[$0-2].first_line, _$[$0-2].first_column); 
+break;
+case 63:
+ this.$ = new Modulo($$[$0-2], $$[$0], _$[$0-2].first_line, _$[$0-2].first_column); 
+break;
+case 64:
+ this.$ = new Negado($$[$0], _$[$0-1].first_line, _$[$0-1].first_column); 
+break;
+case 65:
+ this.$ = $$[$0-1];
+break;
 case 82:
  this.$ = new Literal($$[$0], Tipo.STRING, _$[$0].first_line, _$[$0].first_column); 
 break;
@@ -441,10 +453,15 @@ _handle_error:
         //Importación de expresiones
         const { Literal } = require('../expresiones/Literal.ts');
         const { Identificador } = require('../expresiones/Identificador.ts');
+                //expresiones aritméticas
         const { Suma } = require('../expresiones/aritmetica/Suma.ts');
         const { Resta } = require('../expresiones/aritmetica/Resta.ts');
         const { Multiplicacion } = require('../expresiones/aritmetica/Multiplicacion.ts');
         const { Division } = require('../expresiones/aritmetica/Division.ts');
+        const { Potencia } = require('../expresiones/aritmetica/Potencia.ts');
+        const { Modulo } = require('../expresiones/aritmetica/Modulo.ts');
+        const { Negado } = require('../expresiones/aritmetica/Negado.ts');
+
         //Importación de herramientas auxiliares
         const { Consola } = require('../consola_singleton/Consola.ts');
         const { Tipo } = require('../abstracto/Retorno.ts');

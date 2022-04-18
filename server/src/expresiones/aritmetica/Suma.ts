@@ -1,5 +1,4 @@
 import { Expresion } from "../../abstracto/Expresion";
-import { Instruccion } from "../../abstracto/Instruccion";
 import { Excepcion } from "../../errores/Excepcion";
 import { Environment } from "../../simbolo/Environment";
 import { Retorno, Tipo } from "../../abstracto/Retorno";

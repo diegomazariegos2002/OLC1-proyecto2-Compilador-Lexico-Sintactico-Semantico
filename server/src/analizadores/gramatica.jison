@@ -111,10 +111,15 @@
         //Importación de expresiones
         const { Literal } = require('../expresiones/Literal.ts');
         const { Identificador } = require('../expresiones/Identificador.ts');
+                //expresiones aritméticas
         const { Suma } = require('../expresiones/aritmetica/Suma.ts');
         const { Resta } = require('../expresiones/aritmetica/Resta.ts');
         const { Multiplicacion } = require('../expresiones/aritmetica/Multiplicacion.ts');
         const { Division } = require('../expresiones/aritmetica/Division.ts');
+        const { Potencia } = require('../expresiones/aritmetica/Potencia.ts');
+        const { Modulo } = require('../expresiones/aritmetica/Modulo.ts');
+        const { Negado } = require('../expresiones/aritmetica/Negado.ts');
+
         //Importación de herramientas auxiliares
         const { Consola } = require('../consola_singleton/Consola.ts');
         const { Tipo } = require('../abstracto/Retorno.ts');
@@ -244,10 +249,10 @@ EXPRESION:
         |       EXPRESION menos EXPRESION { $$ = new Resta($1, $3, @1.first_line, @1.first_column); }
         |       EXPRESION multiplicacion EXPRESION { $$ = new Multiplicacion($1, $3, @1.first_line, @1.first_column); }
         |       EXPRESION division EXPRESION { $$ = new Division($1, $3, @1.first_line, @1.first_column); }
-        |       EXPRESION exponente EXPRESION {}
-        |       EXPRESION modulo EXPRESION {}
-        |       menos EXPRESION %prec umenos {}
-        |       parentesisAbre EXPRESION parentesisCierra {}
+        |       EXPRESION exponente EXPRESION { $$ = new Potencia($1, $3, @1.first_line, @1.first_column); }
+        |       EXPRESION modulo EXPRESION { $$ = new Modulo($1, $3, @1.first_line, @1.first_column); }
+        |       menos EXPRESION %prec umenos { $$ = new Negado($2, @1.first_line, @1.first_column); }
+        |       parentesisAbre EXPRESION parentesisCierra { $$ = $2;}
         /*Operaciones condicionales*/
         |       EXPRESION igualacion EXPRESION {}
         |       EXPRESION diferenciacion EXPRESION {}
