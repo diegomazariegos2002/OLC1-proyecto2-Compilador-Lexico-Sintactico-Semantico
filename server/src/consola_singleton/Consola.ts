@@ -20,6 +20,8 @@ export class Consola {
 
     public cleanConsola(){
         this.consola = "";
+        this.ast =  "";
+        this.errores = [];
     }
 
     /**===================================== MÉTODOS GET AND SET ===================================== */

@@ -49,12 +49,10 @@ export class Asignacion extends Instruccion {
 
         const consola = Consola.getInstance()
         const nombre_nodo =`node_${this.line}_${this.column}_`
-        consola.set_Ast(`
-        ${nombre_nodo}[label="\\<Instruccion\\>\\nAsignacion"];
-        ${nombre_nodo}1[label="\\<Nombre\\>\\n${this.nombre}"];
-        ${nombre_nodo}->${nombre_nodo}1;
-        ${nombre_nodo}->${this.value.ast()}
-        `)
+        consola.set_Ast(`${nombre_nodo}[label="\\<Instruccion\\>\\nAsignacion"];\n`)
+        consola.set_Ast(`${nombre_nodo}1[label="\\<Identificador\\>\\n{${this.nombre}}"];\n`)
+        consola.set_Ast(`${nombre_nodo}->${nombre_nodo}1;\n`)
+        consola.set_Ast(`${nombre_nodo}->${this.value.ast()}\n`)
 
     }
 }

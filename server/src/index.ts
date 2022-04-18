@@ -25,22 +25,24 @@ app.post('/analizar', function(request:any, response:any){
     var entrada = request.body.entrada;
     console.log("Estoy analizando");
     console.log(entrada);
-    const ast = parser.parse(entrada);
     var consola = Consola.getInstance();
     consola.cleanConsola();
-
+    //realizando el analisis de la entrada.
+    consola.set_Ast("digraph G { \nnode[shape=box];\nnodeInicio[label=\"<\\ INICIO \\>\"];\n\n");
+    const ast = parser.parse(entrada);
     const env = new Environment(null); 
-    consola.set_Ast("digraph G { node[shape=box];nodeOriginal[label=\"<\\Lista_Instrucciones\\>\"];");
 
     for(const instruccion of ast){
         try{
-            // instruccion.ast()
-            // consola.set_Ast(`nodeOriginal->node_${instruccion.line}_${instruccion.column}_;`)
+            consola.set_Ast(`nodeInicio->node_${instruccion.line}_${instruccion.column}_;\n`)
+            instruccion.ast()
             instruccion.execute(env)
         }catch(error){
             console.log("soy un error"+error)
         }
     }
+
+    consola.set_Ast("}"); //para cerrar el dot porque es más práctico hacerlo aquí que en la gramática
 
     console.log(consola.get_Ast());
 

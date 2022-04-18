@@ -34,7 +34,7 @@ export class Identificador extends Expresion {
         const name_nodo = `node_${this.line}_${this.column}_`
         return `
         ${name_nodo};
-        ${name_nodo}[label="{${this.id}}"];
+        ${name_nodo}[label="\\<Identificador\\>\\n{${this.id}}"];
         `
     }
 }

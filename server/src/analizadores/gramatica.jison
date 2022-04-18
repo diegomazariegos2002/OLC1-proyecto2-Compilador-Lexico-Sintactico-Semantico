@@ -119,7 +119,6 @@
         const { Consola } = require('../consola_singleton/Consola.ts');
         const { Tipo } = require('../abstracto/Retorno.ts');
         const { Excepcion } = require('../errores/Excepcion.ts');
-
         var consola = Consola.getInstance();
 %}
 

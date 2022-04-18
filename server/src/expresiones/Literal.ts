@@ -38,11 +38,13 @@ export class Literal extends Expresion {
         const nombre = `node_${this.line}_${this.column}_`
         if (this.tipo == Tipo.STRING) return `
         ${nombre};
-        ${nombre}[label="\\"${this.value.toString()}\\""];`
+        ${nombre}[label="\\<Valor\\>\\n\\"${this.value.toString()}\\""];
+        `
 
         else return `
         ${nombre};
-        ${nombre}[label="${this.value.toString()}"];`
+        ${nombre}[label="\\<Valor\\>\\n${this.value.toString()}"];
+        `
 
     }
 }
