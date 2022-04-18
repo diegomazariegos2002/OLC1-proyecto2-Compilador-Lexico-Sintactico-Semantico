@@ -30,7 +30,7 @@ export class Println extends Instruccion {
 
     public ast() {
         const consola = Consola.getInstance()
-        const nombreNodo = `node_${this.line}_${this.column}_`
+        const nombreNodo = `instruccion_${this.line}_${this.column}_`
         consola.set_Ast(`${nombreNodo}[label="\\<Instruccion\\>\\nprintln"];\n`)
         if (this.value!= null){consola.set_Ast(`    ${nombreNodo}->${this.value.ast()}\n`)}
     }

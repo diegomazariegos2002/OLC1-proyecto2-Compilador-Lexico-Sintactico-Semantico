@@ -82,7 +82,7 @@ export class Declaracion_Var extends Instruccion {
     }
     public ast(): void {
         const consola = Consola.getInstance();
-        const nombreNodo = `node_${this.line}_${this.column}_`
+        const nombreNodo = `instruccion_${this.line}_${this.column}_`
         consola.set_Ast(`${nombreNodo}[label="\\<Instruccion\\>\\nDeclaracion"];\n`)
         consola.set_Ast(`${nombreNodo}1[label="\\<Tipo\\>\\n${this.tipo}"];\n`)
         consola.set_Ast(`${nombreNodo}2[label="\\<Nombre\\>\\n${this.lista_nombres}"];\n`)

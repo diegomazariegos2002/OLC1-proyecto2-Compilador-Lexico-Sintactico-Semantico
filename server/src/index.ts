@@ -31,15 +31,27 @@ app.post('/analizar', function(request:any, response:any){
     consola.set_Ast("digraph G { \nnode[shape=box];\nnodeInicio[label=\"<\\ INICIO \\>\"];\n\n");
     const ast = parser.parse(entrada);
     const env = new Environment(null); 
-
+    var cont = 0;
+    var inst_line_anterior = 0;
+    var inst_col_anterior = 0;
     for(const instruccion of ast){
         try{
-            consola.set_Ast(`nodeInicio->node_${instruccion.line}_${instruccion.column}_;\n`)
+            if(cont == 0){
+                consola.set_Ast(`nodeInicio->instruccion_${instruccion.line}_${instruccion.column}_;\n`);
+                inst_line_anterior = instruccion.line;
+                inst_col_anterior = instruccion.column;
+            }else{
+                consola.set_Ast(`instruccion_${inst_line_anterior}_${inst_col_anterior}_->instruccion_${instruccion.line}_${instruccion.column}_;\n`);
+                inst_line_anterior = instruccion.line;
+                inst_col_anterior = instruccion.column;
+            }
+            
             instruccion.execute(env)
             instruccion.ast()
         }catch(error){
             console.log("soy un error"+error)
         }
+        cont++;
     }
 
     consola.set_Ast("}"); //para cerrar el dot porque es más práctico hacerlo aquí que en la gramática
