@@ -27,3 +27,4 @@ println(10 + 1^b - 10 + bandera + 13 % 5);
 println(-10 + 1^b - 10 + bandera + 13 % 5);
 println(b - 10 * -10 + bandera);
 println(b - 10 * - (10 + bandera));
+println(toString(b) + 1);

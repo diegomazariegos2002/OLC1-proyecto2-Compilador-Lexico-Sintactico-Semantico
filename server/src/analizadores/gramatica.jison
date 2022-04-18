@@ -54,7 +54,7 @@
 "toUpper"               return 'toUpper'
 "Round"                 return 'round'
 "length"                return 'length'
-"Tipoof"                return 'TipoOf'
+"Typeof"                return 'TypeOf'
 "tostring"              return 'to_String'
 "toCharArray"           return 'toCharArray'
 "run"                   return 'run'
@@ -119,7 +119,8 @@
         const { Potencia } = require('../expresiones/aritmetica/Potencia.ts');
         const { Modulo } = require('../expresiones/aritmetica/Modulo.ts');
         const { Negado } = require('../expresiones/aritmetica/Negado.ts');
-
+                //expresiones de funciones reservadas
+        const { ToString } = require('../expresiones/funciones_reservadas/ToString.ts');
         //Importación de herramientas auxiliares
         const { Consola } = require('../consola_singleton/Consola.ts');
         const { Tipo } = require('../abstracto/Retorno.ts');
@@ -260,6 +261,9 @@ EXPRESION:
         |       EXPRESION mayorQue EXPRESION {}
         |       EXPRESION mayorIgualQue EXPRESION {}
         |       EXPRESION menorIgualQue EXPRESION {}
+        /*Operaciones lógicas*/
+        |       or EXPRESION {}
+        |       and EXPRESION {}
         |       not EXPRESION {}
         /*LLamada de función que devuelve un valor*/
         |       identificador parentesisAbre LISTA_VALORES parentesisCierra puntoYcoma {}
@@ -270,8 +274,8 @@ EXPRESION:
         |       toUpper parentesisAbre EXPRESION parentesisCierra {}
         |       round parentesisAbre EXPRESION parentesisCierra {}
         |       length parentesisAbre EXPRESION parentesisCierra {}
-        |       TipoOf parentesisAbre EXPRESION parentesisCierra {}
-        |       tostring parentesisAbre EXPRESION parentesisCierra {}
+        |       TypeOf parentesisAbre EXPRESION parentesisCierra {}
+        |       to_String parentesisAbre EXPRESION parentesisCierra { $$ = new ToString($3, @1.first_line, @1.first_column); }
         |       toCharArray parentesisAbre EXPRESION parentesisCierra {}
         /*Valores que pueden estar en las expresiones*/
         |       cadena { $$ = new Literal($1, Tipo.STRING, @1.first_line, @1.first_column); }
