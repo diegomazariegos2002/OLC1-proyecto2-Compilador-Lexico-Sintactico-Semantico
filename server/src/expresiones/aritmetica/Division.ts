@@ -91,6 +91,14 @@ export class Division extends Expresion{
     }
 
     public ast(): string {
-        throw new Error("Method not implemented.");
+        const name_nodo = `node_${this.left.line}_${this.right.column}_expresion`;
+        return `
+        ${name_nodo};
+        ${name_nodo}[label="\\< Expresión \\> \\n División"];
+        ${name_nodo}->${this.left.ast()}
+        ${name_nodo}_division[label="{/}"];
+        ${name_nodo}->${name_nodo}_division;
+        ${name_nodo}->${this.right.ast()}
+        `
     }
 }

@@ -39,6 +39,13 @@ export class Negado extends Expresion{
     }
 
     public ast(): string {
-        throw new Error("Method not implemented.");
+        const name_nodo = `node_${this.right.line}_${this.right.column}_expresion`;
+        return `
+        ${name_nodo};
+        ${name_nodo}[label="\\< Expresión \\> \\n Negado"];
+        ${name_nodo}_negado[label="{-}"];
+        ${name_nodo}->${name_nodo}_negado;
+        ${name_nodo}->${this.right.ast()}
+        `
     }
 }

@@ -114,6 +114,14 @@ export class Suma extends Expresion{
         return retorno;
     }
     public ast(): string {
-        throw new Error("Method not implemented.");
+        const name_nodo = `node_${this.left.line}_${this.right.column}_expresion`;
+        return `
+        ${name_nodo};
+        ${name_nodo}[label="\\< Expresión \\> \\n Suma"];
+        ${name_nodo}->${this.left.ast()}
+        ${name_nodo}_suma[label="{+}"];
+        ${name_nodo}->${name_nodo}_suma;
+        ${name_nodo}->${this.right.ast()}
+        `
     }
 }
