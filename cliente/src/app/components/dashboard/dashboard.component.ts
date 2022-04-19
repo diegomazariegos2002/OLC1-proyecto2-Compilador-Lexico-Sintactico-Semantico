@@ -27,6 +27,7 @@ export class DashboardComponent implements OnInit {
         const JsonRespuesta = JSON.parse(JSON.stringify(res));
         if(this.consola.salida !== undefined){
           this.consola.salida = JsonRespuesta.consola;
+          this.consola.ast = JsonRespuesta.ast;
         }
       }, 
       //Si sucede un error en la petición

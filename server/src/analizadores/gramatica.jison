@@ -111,6 +111,7 @@
         //Importación de expresiones
         const { Literal } = require('../expresiones/Literal.ts');
         const { Identificador } = require('../expresiones/Identificador.ts');
+        const { Casteo } = require('../expresiones/Casteo.ts');
                 //expresiones aritméticas
         const { Suma } = require('../expresiones/aritmetica/Suma.ts');
         const { Resta } = require('../expresiones/aritmetica/Resta.ts');
@@ -126,12 +127,17 @@
         const { Mayor_Que } = require('../expresiones/operaciones_relacionales/Mayor_Que.ts');
         const { Mayor_Igual_Que } = require('../expresiones/operaciones_relacionales/Mayor_Igual_Que.ts');
         const { Menor_Igual_Que } = require('../expresiones/operaciones_relacionales/Menor_Igual_Que.ts');
+                //expresiones de operaciones lógicos
+        const { Or } = require('../expresiones/operadores_logicos/Or.ts');
+        const { And } = require('../expresiones/operadores_logicos/And.ts');
+        const { Not } = require('../expresiones/operadores_logicos/Not.ts');
                 //expresiones de funciones reservadas
         const { ToString } = require('../expresiones/funciones_reservadas/ToString.ts');
         //Importación de herramientas auxiliares
         const { Consola } = require('../consola_singleton/Consola.ts');
         const { Tipo } = require('../abstracto/Retorno.ts');
         const { Excepcion } = require('../errores/Excepcion.ts');
+        const { Retorno } = require('../abstracto/Retorno.ts');
         var consola = Consola.getInstance();
 %}
 
@@ -160,7 +166,7 @@ INICIO:
 ENTRADAS: 
         ENTRADAS ENTRADA {  if($2!=="") $1.push($2); $$=$1; }
         |  ENTRADA{ if($$!=="") $$=[$1]; else $$=[]; }
-        | error { console.error('Este es un error sintáctico') }
+        | error puntoYcoma{ console.error('Este es un error sintáctico'); let retorno = {value: null, type: Tipo.ERROR}; return retorno;}
 ;
 
 ENTRADA:    
@@ -231,7 +237,7 @@ INSTRUCCION:
         |       LLAMADA {}
         |       PRINT {$$ = $1;}
         |       PRINTLN {}
-        |       error ';' {
+        |       error puntoYcoma {
                         console.log("Error sintáctico en la línea: "+(yylineno + 1));
                         var consola = Consola.getInstance();
                         const error = new Excepcion("Error sintáctico", "El caracter "+ (this.terminals_[symbol] || symbol)+" no se esperaba en esta posición.", this._$.first_line, this._$.first_column+1);
@@ -269,13 +275,13 @@ EXPRESION:
         |       EXPRESION mayorIgualQue EXPRESION { $$ = new Mayor_Igual_Que($1, $3, @1.first_line, @1.first_column);}
         |       EXPRESION menorIgualQue EXPRESION { $$ = new Menor_Igual_Que($1, $3, @1.first_line, @1.first_column); }
         /*Operaciones lógicas*/
-        |       or EXPRESION {}
-        |       and EXPRESION {}
-        |       not EXPRESION {}
+        |       EXPRESION or EXPRESION { $$ = new Or($1, $3, @1.first_line, @1.first_column); }
+        |       EXPRESION and EXPRESION { $$ = new And($1, $3, @1.first_line, @1.first_column); }
+        |       not EXPRESION { $$ = new Not($2, @1.first_line, @1.first_column); }
         /*LLamada de función que devuelve un valor*/
         |       identificador parentesisAbre LISTA_VALORES parentesisCierra puntoYcoma {}
         /*Casteos*/
-        |       parentesisAbre TIPO parentesisCierra EXPRESION {} 
+        |       parentesisAbre TIPO parentesisCierra EXPRESION { $$ = new Casteo($2, $4, @1.first_line, @1.first_column);} 
         /*Funciones reservadas del lenguaje*/
         |       toLower parentesisAbre EXPRESION parentesisCierra {}
         |       toUpper parentesisAbre EXPRESION parentesisCierra {}
@@ -295,6 +301,12 @@ EXPRESION:
         /*recordar que estos van porque se pueden asignar a una variable esto sin afectar a la variable que se incrementa o decrementa EJEM: int a = 10; int b = a++; */
         |       EXPRESION incremento {}
         |       EXPRESION decremento {}
+        |       error puntoYcoma {
+                        console.log("Error sintáctico en la línea: "+(yylineno + 1));
+                        var consola = Consola.getInstance();
+                        const error = new Excepcion("Error sintáctico", "El caracter "+ (this.terminals_[symbol] || symbol)+" no se esperaba en esta posición.", this._$.first_line, this._$.first_column+1);
+                        consola.set_Error(error);
+        }
 ;
 
 VALOR: EXPRESION {} ;

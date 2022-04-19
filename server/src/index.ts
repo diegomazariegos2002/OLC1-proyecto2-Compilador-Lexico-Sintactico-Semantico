@@ -56,8 +56,6 @@ app.post('/analizar', function(request:any, response:any){
 
     consola.set_Ast("}"); //para cerrar el dot porque es más práctico hacerlo aquí que en la gramática
 
-    console.log(consola.get_Ast());
-
     /* Salida de datos */ 
     var salida = 
     {
