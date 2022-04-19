@@ -119,6 +119,9 @@
         const { Potencia } = require('../expresiones/aritmetica/Potencia.ts');
         const { Modulo } = require('../expresiones/aritmetica/Modulo.ts');
         const { Negado } = require('../expresiones/aritmetica/Negado.ts');
+                //expresiones de operaciones relacionales
+        const { Igualacion } = require('../expresiones/operaciones_relacionales/Igualacion.ts');
+        const { Diferenciacion } = require('../expresiones/operaciones_relacionales/Diferenciacion.ts');
                 //expresiones de funciones reservadas
         const { ToString } = require('../expresiones/funciones_reservadas/ToString.ts');
         //Importación de herramientas auxiliares
@@ -255,8 +258,8 @@ EXPRESION:
         |       menos EXPRESION %prec umenos { $$ = new Negado($2, @1.first_line, @1.first_column); }
         |       parentesisAbre EXPRESION parentesisCierra { $$ = $2;}
         /*Operaciones condicionales*/
-        |       EXPRESION igualacion EXPRESION {}
-        |       EXPRESION diferenciacion EXPRESION {}
+        |       EXPRESION igualacion EXPRESION { $$ = new Igualacion($1, $3, @1.first_line, @1.first_column); }
+        |       EXPRESION diferenciacion EXPRESION { $$ = new Diferenciacion($1, $3, @1.first_line, @1.first_column); } 
         |       EXPRESION menorQue EXPRESION {}
         |       EXPRESION mayorQue EXPRESION {}
         |       EXPRESION mayorIgualQue EXPRESION {}

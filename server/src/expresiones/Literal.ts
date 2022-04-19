@@ -19,8 +19,11 @@ export class Literal extends Expresion {
             return { value: this.value, type: Tipo.DOUBLE }
         else if (this.tipo == Tipo.STRING)
             return { value: this.value, type: Tipo.STRING }
-        else if (this.tipo == Tipo.CHAR)
+        else if (this.tipo == Tipo.CHAR){
+            this.value = this.value.substr(1); //eliminando la primera comilla simple
+            this.value = this.value.substr(0, this.value.length - 1); //eliminando la ultima comilla simple
             return { value: this.value, type: Tipo.CHAR }
+        }
         else if (this.tipo == Tipo.BOOLEAN) {
             if (this.value.toLowerCase() == "true") { //para comparar sin importar las mayusculas y así.
                 return { value: Boolean(true), type: Tipo.BOOLEAN }

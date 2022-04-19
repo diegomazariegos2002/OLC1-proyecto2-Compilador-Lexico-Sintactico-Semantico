@@ -157,6 +157,12 @@ break;
 case 65:
  this.$ = $$[$0-1];
 break;
+case 66:
+ this.$ = new Igualacion($$[$0-2], $$[$0], _$[$0-2].first_line, _$[$0-2].first_column); 
+break;
+case 67:
+ this.$ = new Diferenciacion($$[$0-2], $$[$0], _$[$0-2].first_line, _$[$0-2].first_column); 
+break;
 case 82:
  this.$ = new ToString($$[$0-1], _$[$0-3].first_line, _$[$0-3].first_column); 
 break;
@@ -464,6 +470,9 @@ _handle_error:
         const { Potencia } = require('../expresiones/aritmetica/Potencia.ts');
         const { Modulo } = require('../expresiones/aritmetica/Modulo.ts');
         const { Negado } = require('../expresiones/aritmetica/Negado.ts');
+                //expresiones de operaciones relacionales
+        const { Igualacion } = require('../expresiones/operaciones_relacionales/Igualacion.ts');
+        const { Diferenciacion } = require('../expresiones/operaciones_relacionales/Diferenciacion.ts');
                 //expresiones de funciones reservadas
         const { ToString } = require('../expresiones/funciones_reservadas/ToString.ts');
         //Importación de herramientas auxiliares

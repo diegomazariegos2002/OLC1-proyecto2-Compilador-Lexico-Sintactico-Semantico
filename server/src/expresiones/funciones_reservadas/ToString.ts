@@ -19,7 +19,7 @@ export class ToString extends Expresion{
         const nodoExp = this.expresion.execute(env);
 
         if (nodoExp.type == Tipo.ERROR) {
-            //no tiene que hacer la elevación y solo dar un error semántico
+            //no tiene que hacer la conversión y solo dar un error semántico
             const error = new Excepcion("Error semántico", `No es posible aplicar el método ToString() a un valor devuelto de tipo NULL`, this.line, this.column);
             consola.set_Error(error);
             retorno = {value: null, type: Tipo.ERROR}
@@ -28,9 +28,15 @@ export class ToString extends Expresion{
                 retorno = { value: (nodoExp.value.toString()), type: Tipo.STRING}
             }else if(nodoExp.type == Tipo.DOUBLE){
                 retorno = { value: (nodoExp.value.toString()), type: Tipo.STRING}
+            }else if(nodoExp.type == Tipo.CHAR){
+                retorno = { value: (nodoExp.value.toString()), type: Tipo.STRING}
+            }else if(nodoExp.type == Tipo.STRING){
+                retorno = { value: (nodoExp.value.toString()), type: Tipo.STRING}
+            }else if(nodoExp.type == Tipo.BOOLEAN){
+                retorno = { value: (nodoExp.value.toString()), type: Tipo.STRING}
             }else{
-                //ERROR
-                const error = new Excepcion("Error semántico", `No es posible aplicar el método ToString() a un valor devuelto de tipo char\\string\\boolean\\NULL`, this.line, this.column);
+                //no tiene que hacer la conversión y solo dar un error semántico
+                const error = new Excepcion("Error semántico", `No es posible aplicar el método ToString() a un valor devuelto de tipo NULL`, this.line, this.column);
                 consola.set_Error(error);
                 retorno = {value: null, type: Tipo.ERROR}
             }
