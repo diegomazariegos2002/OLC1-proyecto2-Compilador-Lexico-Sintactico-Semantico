@@ -3,7 +3,8 @@ import { Excepcion } from "../../errores/Excepcion";
 import { Environment } from "../../simbolo/Environment";
 import { Retorno, Tipo } from "../../abstracto/Retorno";
 import { Consola } from "../../consola_singleton/Consola";
-export class Diferenciacion extends Expresion{
+
+export class Menor_Que extends Expresion{
     constructor(
         private left: Expresion,
         private right: Expresion,
@@ -26,8 +27,14 @@ export class Diferenciacion extends Expresion{
             retorno = {value: null, type: Tipo.ERROR}
         }else{
             if(nodoIzq.type == nodoDer.type){ //si ambas expresiones son del mismo tipo.
-                if (nodoIzq.type == Tipo.INT || nodoIzq.type == Tipo.DOUBLE || nodoIzq.type == Tipo.CHAR || nodoIzq.type == Tipo.STRING) {
-                    if (nodoIzq.value != nodoDer.value) {
+                if (nodoIzq.type == Tipo.INT || nodoIzq.type == Tipo.DOUBLE) {
+                    if (nodoIzq.value < nodoDer.value) {
+                        retorno = {value: true, type: Tipo.BOOLEAN}
+                    } else {
+                        retorno = {value: false, type: Tipo.BOOLEAN}    
+                    }
+                }else if (nodoIzq.type == Tipo.CHAR) {
+                    if (nodoIzq.value.charCodeAt(0) < nodoDer.value.charCodeAt(0)) {
                         retorno = {value: true, type: Tipo.BOOLEAN}
                     } else {
                         retorno = {value: false, type: Tipo.BOOLEAN}    
@@ -41,14 +48,14 @@ export class Diferenciacion extends Expresion{
             }//Si ambas expresiones no son del mismo tipo
             else if(nodoIzq.type == Tipo.INT){ //si la primera es entero
                 if (nodoDer.type == Tipo.DOUBLE) {
-                    if (nodoIzq.value != nodoDer.value) {
+                    if (nodoIzq.value < nodoDer.value) {
                         retorno = {value: true, type: Tipo.BOOLEAN}
                     } else {
                         retorno = {value: false, type: Tipo.BOOLEAN}    
                     }
 
                 } else if(nodoDer.type == Tipo.CHAR) {
-                    if (nodoIzq.value != nodoDer.value.charCodeAt(0)) {
+                    if (nodoIzq.value < nodoDer.value.charCodeAt(0)) {
                         retorno = {value: true, type: Tipo.BOOLEAN}
                     } else {
                         retorno = {value: false, type: Tipo.BOOLEAN}    
@@ -62,14 +69,14 @@ export class Diferenciacion extends Expresion{
                 }
             }else if(nodoIzq.type == Tipo.DOUBLE){ //Si el primero es un DOUBLE
                 if (nodoDer.type == Tipo.INT) { // Si el otro es tipo int
-                    if (nodoIzq.value != nodoDer.value) {
+                    if (nodoIzq.value < nodoDer.value) {
                         retorno = {value: true, type: Tipo.BOOLEAN}
                     } else {
                         retorno = {value: false, type: Tipo.BOOLEAN}    
                     }
 
-                } else if(nodoDer.type == Tipo.CHAR) { // Si el otro es tipo boolean
-                    if (nodoIzq.value != nodoDer.value.charCodeAt(0)) {
+                } else if(nodoDer.type < Tipo.CHAR) { // Si el otro es tipo boolean
+                    if (nodoIzq.value == nodoDer.value.charCodeAt(0)) {
                         retorno = {value: true, type: Tipo.BOOLEAN}
                     } else {
                         retorno = {value: false, type: Tipo.BOOLEAN}    
@@ -84,14 +91,14 @@ export class Diferenciacion extends Expresion{
                 
             }else if(nodoIzq.type == Tipo.CHAR){ //Si el primero es Boolean
                 if (nodoDer.type == Tipo.INT) {
-                    if (nodoIzq.value.charCodeAt(0) != nodoDer.value) {
+                    if (nodoIzq.value.charCodeAt(0) < nodoDer.value) {
                         retorno = {value: true, type: Tipo.BOOLEAN}
                     } else {
                         retorno = {value: false, type: Tipo.BOOLEAN}    
                     }
 
                 } else if (nodoDer.type == Tipo.DOUBLE) {
-                    if (nodoIzq.value.charCodeAt(0) != nodoDer.value) {
+                    if (nodoIzq.value.charCodeAt(0) < nodoDer.value) {
                         retorno = {value: true, type: Tipo.BOOLEAN}
                     } else {
                         retorno = {value: false, type: Tipo.BOOLEAN}    
@@ -119,8 +126,8 @@ export class Diferenciacion extends Expresion{
         ${name_nodo};
         ${name_nodo}[label="\\< Expresión \\> \\n Operación relacional"];
         ${name_nodo}->${this.left.ast()}
-        ${name_nodo}_diferenciacion[label="{=!}"];
-        ${name_nodo}->${name_nodo}_diferenciacion;
+        ${name_nodo}_MenorQue[label="{<}"];
+        ${name_nodo}->${name_nodo}_MenorQue;
         ${name_nodo}->${this.right.ast()}
         `
     }

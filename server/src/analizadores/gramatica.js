@@ -163,6 +163,18 @@ break;
 case 67:
  this.$ = new Diferenciacion($$[$0-2], $$[$0], _$[$0-2].first_line, _$[$0-2].first_column); 
 break;
+case 68:
+ this.$ = new Menor_Que($$[$0-2], $$[$0], _$[$0-2].first_line, _$[$0-2].first_column);
+break;
+case 69:
+ this.$ = new Mayor_Que($$[$0-2], $$[$0], _$[$0-2].first_line, _$[$0-2].first_column);
+break;
+case 70:
+ this.$ = new Mayor_Igual_Que($$[$0-2], $$[$0], _$[$0-2].first_line, _$[$0-2].first_column);
+break;
+case 71:
+ this.$ = new Menor_Igual_Que($$[$0-2], $$[$0], _$[$0-2].first_line, _$[$0-2].first_column); 
+break;
 case 82:
  this.$ = new ToString($$[$0-1], _$[$0-3].first_line, _$[$0-3].first_column); 
 break;
@@ -473,6 +485,10 @@ _handle_error:
                 //expresiones de operaciones relacionales
         const { Igualacion } = require('../expresiones/operaciones_relacionales/Igualacion.ts');
         const { Diferenciacion } = require('../expresiones/operaciones_relacionales/Diferenciacion.ts');
+        const { Menor_Que } = require('../expresiones/operaciones_relacionales/Menor_Que.ts');
+        const { Mayor_Que } = require('../expresiones/operaciones_relacionales/Mayor_Que.ts');
+        const { Mayor_Igual_Que } = require('../expresiones/operaciones_relacionales/Mayor_Igual_Que.ts');
+        const { Menor_Igual_Que } = require('../expresiones/operaciones_relacionales/Menor_Igual_Que.ts');
                 //expresiones de funciones reservadas
         const { ToString } = require('../expresiones/funciones_reservadas/ToString.ts');
         //Importación de herramientas auxiliares
@@ -914,13 +930,13 @@ case 51:/*igualacion*/     return 56
 break;
 case 52:/*Diferenciacion*/ return 57
 break;
-case 53:/*menorQue*/        return 58
+case 53:/*menorIgualQue*/  return 61
 break;
-case 54:/*menorIgualQue*/  return 61
+case 54:/*mayorIgualQue*/  return 60
 break;
-case 55:/*mayorQue*/        return 59    
+case 55:/*menorQue*/        return 58
 break;
-case 56:/*mayorIgualQue*/  return 60
+case 56:/*mayorQue*/        return 59    
 break;
 case 57:/*igual*/           return 26
 break;
@@ -964,7 +980,7 @@ case 76: console.log("Error léxico")
 break;
 }
 },
-rules: [/^(?:["])/i,/^(?:[^"\\]+)/i,/^(?:\\")/i,/^(?:\\n)/i,/^(?:\s)/i,/^(?:\\t)/i,/^(?:\\\\)/i,/^(?:\\')/i,/^(?:\\r)/i,/^(?:["])/i,/^(?:\s+)/i,/^(?:\/\/[^\r\n]*[\r|\n|\r\n]?)/i,/^(?:[/][*][^*]*[*]+([^/*][^*]*[*]+)*[/])/i,/^(?:int\b)/i,/^(?:double\b)/i,/^(?:boolean\b)/i,/^(?:char\b)/i,/^(?:string\b)/i,/^(?:true\b)/i,/^(?:false\b)/i,/^(?:new\b)/i,/^(?:if\b)/i,/^(?:else\b)/i,/^(?:switch\b)/i,/^(?:case\b)/i,/^(?:default\b)/i,/^(?:println\b)/i,/^(?:print\b)/i,/^(?:break\b)/i,/^(?:while\b)/i,/^(?:for\b)/i,/^(?:do\b)/i,/^(?:continue\b)/i,/^(?:return\b)/i,/^(?:void\b)/i,/^(?:toLower\b)/i,/^(?:toUpper\b)/i,/^(?:Round\b)/i,/^(?:length\b)/i,/^(?:Typeof\b)/i,/^(?:tostring\b)/i,/^(?:toCharArray\b)/i,/^(?:run\b)/i,/^(?:\+\+)/i,/^(?:--)/i,/^(?:\+)/i,/^(?:-)/i,/^(?:\*)/i,/^(?:\/)/i,/^(?:\^)/i,/^(?:%)/i,/^(?:==)/i,/^(?:!=)/i,/^(?:<)/i,/^(?:<=)/i,/^(?:>)/i,/^(?:>=)/i,/^(?:=)/i,/^(?:\?)/i,/^(?::)/i,/^(?:;)/i,/^(?:\|\|)/i,/^(?:&&)/i,/^(?:!)/i,/^(?:\()/i,/^(?:\))/i,/^(?:\{)/i,/^(?:\})/i,/^(?:\[)/i,/^(?:\])/i,/^(?:,)/i,/^(?:([a-zA-Z])[a-zA-Z0-9_]*)/i,/^(?:[']\\\\[']|[']\\"[']|[']\\'[']|[']\\n[']|[']\\t[']|[']\\r[']|['].?['])/i,/^(?:[0-9]+(\.[0-9]+)+\b)/i,/^(?:[0-9]+)/i,/^(?:$)/i,/^(?:.)/i],
+rules: [/^(?:["])/i,/^(?:[^"\\]+)/i,/^(?:\\")/i,/^(?:\\n)/i,/^(?:\s)/i,/^(?:\\t)/i,/^(?:\\\\)/i,/^(?:\\')/i,/^(?:\\r)/i,/^(?:["])/i,/^(?:\s+)/i,/^(?:\/\/[^\r\n]*[\r|\n|\r\n]?)/i,/^(?:[/][*][^*]*[*]+([^/*][^*]*[*]+)*[/])/i,/^(?:int\b)/i,/^(?:double\b)/i,/^(?:boolean\b)/i,/^(?:char\b)/i,/^(?:string\b)/i,/^(?:true\b)/i,/^(?:false\b)/i,/^(?:new\b)/i,/^(?:if\b)/i,/^(?:else\b)/i,/^(?:switch\b)/i,/^(?:case\b)/i,/^(?:default\b)/i,/^(?:println\b)/i,/^(?:print\b)/i,/^(?:break\b)/i,/^(?:while\b)/i,/^(?:for\b)/i,/^(?:do\b)/i,/^(?:continue\b)/i,/^(?:return\b)/i,/^(?:void\b)/i,/^(?:toLower\b)/i,/^(?:toUpper\b)/i,/^(?:Round\b)/i,/^(?:length\b)/i,/^(?:Typeof\b)/i,/^(?:tostring\b)/i,/^(?:toCharArray\b)/i,/^(?:run\b)/i,/^(?:\+\+)/i,/^(?:--)/i,/^(?:\+)/i,/^(?:-)/i,/^(?:\*)/i,/^(?:\/)/i,/^(?:\^)/i,/^(?:%)/i,/^(?:==)/i,/^(?:!=)/i,/^(?:<=)/i,/^(?:>=)/i,/^(?:<)/i,/^(?:>)/i,/^(?:=)/i,/^(?:\?)/i,/^(?::)/i,/^(?:;)/i,/^(?:\|\|)/i,/^(?:&&)/i,/^(?:!)/i,/^(?:\()/i,/^(?:\))/i,/^(?:\{)/i,/^(?:\})/i,/^(?:\[)/i,/^(?:\])/i,/^(?:,)/i,/^(?:([a-zA-Z])[a-zA-Z0-9_]*)/i,/^(?:[']\\\\[']|[']\\"[']|[']\\'[']|[']\\n[']|[']\\t[']|[']\\r[']|['].?['])/i,/^(?:[0-9]+(\.[0-9]+)+\b)/i,/^(?:[0-9]+)/i,/^(?:$)/i,/^(?:.)/i],
 conditions: {"string":{"rules":[1,2,3,4,5,6,7,8,9],"inclusive":false},"INITIAL":{"rules":[0,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76],"inclusive":true}}
 });
 return lexer;

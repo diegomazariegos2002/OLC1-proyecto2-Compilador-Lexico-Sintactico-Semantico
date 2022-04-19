@@ -70,10 +70,10 @@
 "%" /*Modulo*/          return 'modulo'    
 "==" /*igualacion*/     return 'igualacion'
 "!=" /*Diferenciacion*/ return 'diferenciacion'
-"<" /*menorQue*/        return 'menorQue'
 "<=" /*menorIgualQue*/  return 'menorIgualQue'
-">" /*mayorQue*/        return 'mayorQue'    
 ">=" /*mayorIgualQue*/  return 'mayorIgualQue'
+"<" /*menorQue*/        return 'menorQue'
+">" /*mayorQue*/        return 'mayorQue'    
 "=" /*igual*/           return 'igual'
 "?" /*interrogacion*/   return 'interrogacion'
 ":" /*dosPuntos*/       return 'dosPuntos'
@@ -122,6 +122,10 @@
                 //expresiones de operaciones relacionales
         const { Igualacion } = require('../expresiones/operaciones_relacionales/Igualacion.ts');
         const { Diferenciacion } = require('../expresiones/operaciones_relacionales/Diferenciacion.ts');
+        const { Menor_Que } = require('../expresiones/operaciones_relacionales/Menor_Que.ts');
+        const { Mayor_Que } = require('../expresiones/operaciones_relacionales/Mayor_Que.ts');
+        const { Mayor_Igual_Que } = require('../expresiones/operaciones_relacionales/Mayor_Igual_Que.ts');
+        const { Menor_Igual_Que } = require('../expresiones/operaciones_relacionales/Menor_Igual_Que.ts');
                 //expresiones de funciones reservadas
         const { ToString } = require('../expresiones/funciones_reservadas/ToString.ts');
         //Importación de herramientas auxiliares
@@ -260,10 +264,10 @@ EXPRESION:
         /*Operaciones condicionales*/
         |       EXPRESION igualacion EXPRESION { $$ = new Igualacion($1, $3, @1.first_line, @1.first_column); }
         |       EXPRESION diferenciacion EXPRESION { $$ = new Diferenciacion($1, $3, @1.first_line, @1.first_column); } 
-        |       EXPRESION menorQue EXPRESION {}
-        |       EXPRESION mayorQue EXPRESION {}
-        |       EXPRESION mayorIgualQue EXPRESION {}
-        |       EXPRESION menorIgualQue EXPRESION {}
+        |       EXPRESION menorQue EXPRESION { $$ = new Menor_Que($1, $3, @1.first_line, @1.first_column);}
+        |       EXPRESION mayorQue EXPRESION { $$ = new Mayor_Que($1, $3, @1.first_line, @1.first_column);}
+        |       EXPRESION mayorIgualQue EXPRESION { $$ = new Mayor_Igual_Que($1, $3, @1.first_line, @1.first_column);}
+        |       EXPRESION menorIgualQue EXPRESION { $$ = new Menor_Igual_Que($1, $3, @1.first_line, @1.first_column); }
         /*Operaciones lógicas*/
         |       or EXPRESION {}
         |       and EXPRESION {}
