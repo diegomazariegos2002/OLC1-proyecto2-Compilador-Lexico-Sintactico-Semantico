@@ -120,6 +120,8 @@
         const { Potencia } = require('../expresiones/aritmetica/Potencia.ts');
         const { Modulo } = require('../expresiones/aritmetica/Modulo.ts');
         const { Negado } = require('../expresiones/aritmetica/Negado.ts');
+        const { Incremento_Exp } = require('../expresiones/aritmetica/Incremento_Exp.ts');
+        const { Decremento_Exp } = require('../expresiones/aritmetica/Decremento_Exp.ts');
                 //expresiones de operaciones relacionales
         const { Igualacion } = require('../expresiones/operaciones_relacionales/Igualacion.ts');
         const { Diferenciacion } = require('../expresiones/operaciones_relacionales/Diferenciacion.ts');
@@ -299,8 +301,8 @@ EXPRESION:
         |       false { $$ = new Literal($1, Tipo.BOOLEAN, @1.first_line, @1.first_column); }
         |       identificador { $$ = new Identificador($1, @1.first_line, @1.first_column);}
         /*recordar que estos van porque se pueden asignar a una variable esto sin afectar a la variable que se incrementa o decrementa EJEM: int a = 10; int b = a++; */
-        |       EXPRESION incremento {}
-        |       EXPRESION decremento {}
+        |       EXPRESION incremento { $$ = new Incremento_Exp($1, @1.first_line, @1.first_column); }
+        |       EXPRESION decremento { $$ = new Decremento_Exp($1, @1.first_line, @1.first_column); }
         |       error puntoYcoma {
                         console.log("Error sintáctico en la línea: "+(yylineno + 1));
                         var consola = Consola.getInstance();

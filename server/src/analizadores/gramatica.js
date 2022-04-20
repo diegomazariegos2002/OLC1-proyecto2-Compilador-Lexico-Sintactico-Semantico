@@ -208,6 +208,12 @@ break;
 case 90:
  this.$ = new Identificador($$[$0], _$[$0].first_line, _$[$0].first_column);
 break;
+case 91:
+ this.$ = new Incremento_Exp($$[$0-1], _$[$0-1].first_line, _$[$0-1].first_column); 
+break;
+case 92:
+ this.$ = new Decremento_Exp($$[$0-1], _$[$0-1].first_line, _$[$0-1].first_column); 
+break;
 case 95:
  this.$ = Tipo.INT;
 break;
@@ -495,6 +501,8 @@ _handle_error:
         const { Potencia } = require('../expresiones/aritmetica/Potencia.ts');
         const { Modulo } = require('../expresiones/aritmetica/Modulo.ts');
         const { Negado } = require('../expresiones/aritmetica/Negado.ts');
+        const { Incremento_Exp } = require('../expresiones/aritmetica/Incremento_Exp.ts');
+        const { Decremento_Exp } = require('../expresiones/aritmetica/Decremento_Exp.ts');
                 //expresiones de operaciones relacionales
         const { Igualacion } = require('../expresiones/operaciones_relacionales/Igualacion.ts');
         const { Diferenciacion } = require('../expresiones/operaciones_relacionales/Diferenciacion.ts');

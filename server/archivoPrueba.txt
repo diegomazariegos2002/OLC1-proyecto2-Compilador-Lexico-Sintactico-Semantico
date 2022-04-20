@@ -80,3 +80,6 @@ println(casteo2);
 println(casteo3);
 println(casteo4);
 println(casteo5);
+println("===Incremento y decremento===");
+println(a++);
+println(c--);
