@@ -26,7 +26,7 @@ export class Diferenciacion extends Expresion{
             retorno = {value: null, type: Tipo.ERROR}
         }else{
             if(nodoIzq.type == nodoDer.type){ //si ambas expresiones son del mismo tipo.
-                if (nodoIzq.type == Tipo.INT || nodoIzq.type == Tipo.DOUBLE || nodoIzq.type == Tipo.CHAR || nodoIzq.type == Tipo.STRING) {
+                if (nodoIzq.type == Tipo.INT || nodoIzq.type == Tipo.DOUBLE || nodoIzq.type == Tipo.CHAR || nodoIzq.type == Tipo.STRING || nodoIzq.type == Tipo.BOOLEAN) {
                     if (nodoIzq.value != nodoDer.value) {
                         retorno = {value: true, type: Tipo.BOOLEAN}
                     } else {
@@ -54,9 +54,19 @@ export class Diferenciacion extends Expresion{
                         retorno = {value: false, type: Tipo.BOOLEAN}    
                     }
 
+                }else if(nodoDer.type == Tipo.BOOLEAN) {
+                    var comparador = 0;
+                    if(nodoDer.value == true){
+                        comparador = 1;
+                    }
+                    if (nodoIzq.value != comparador) {
+                        retorno = {value: true, type: Tipo.BOOLEAN}
+                    } else {
+                        retorno = {value: false, type: Tipo.BOOLEAN}    
+                    }
                 }else{
                     //ERROR
-                    const error = new Excepcion("Error semántico", `int comparado con boolean\\string\\NULL no es una operación relacional válida.`, this.line, this.column);
+                    const error = new Excepcion("Error semántico", `int comparado con string\\NULL no es una operación relacional válida.`, this.line, this.column);
                     consola.set_Error(error);
                     retorno = {value: null, type: Tipo.ERROR}
                 }
@@ -75,9 +85,19 @@ export class Diferenciacion extends Expresion{
                         retorno = {value: false, type: Tipo.BOOLEAN}    
                     }
 
+                }else if(nodoDer.type == Tipo.BOOLEAN) {
+                    var comparador = 0;
+                    if(nodoDer.value == true){
+                        comparador = 1;
+                    }
+                    if (nodoIzq.value != comparador) {
+                        retorno = {value: true, type: Tipo.BOOLEAN}
+                    } else {
+                        retorno = {value: false, type: Tipo.BOOLEAN}    
+                    }
                 }else{
                     //ERROR
-                    const error = new Excepcion("Error semántico", `double comparado con boolean\\string\\NULL no es una operación relacional válida.`, this.line, this.column);
+                    const error = new Excepcion("Error semántico", `double comparado con string\\NULL no es una operación relacional válida.`, this.line, this.column);
                     consola.set_Error(error);
                     retorno = {value: null, type: Tipo.ERROR}
                 }
@@ -97,15 +117,54 @@ export class Diferenciacion extends Expresion{
                         retorno = {value: false, type: Tipo.BOOLEAN}    
                     }
 
+                }else if(nodoDer.type == Tipo.BOOLEAN) {
+                    var comparador = 0;
+                    if(nodoDer.value == true){
+                        comparador = 1;
+                    }
+                    if (nodoIzq.value.charCodeAt(0) != comparador) {
+                        retorno = {value: true, type: Tipo.BOOLEAN}
+                    } else {
+                        retorno = {value: false, type: Tipo.BOOLEAN}    
+                    }
                 }else {
                     //ERROR
-                    const error = new Excepcion("Error semántico", `char comparado con boolean\\string\\NULL no es una operación relacional válida.`, this.line, this.column);
+                    const error = new Excepcion("Error semántico", `char comparado con string\\NULL no es una operación relacional válida.`, this.line, this.column);
+                    consola.set_Error(error);
+                    retorno = {value: null, type: Tipo.ERROR}
+                }
+            }else if(nodoIzq.type == Tipo.BOOLEAN){ //si solo el primero es boolean.
+                var comparador = 0;
+                    if(nodoIzq.value == true){
+                        comparador = 1;
+                    }
+                if(nodoDer.type == Tipo.INT){
+                    if (comparador != nodoDer.value) {
+                        retorno = {value: true, type: Tipo.BOOLEAN}
+                    } else {
+                        retorno = {value: false, type: Tipo.BOOLEAN}
+                    }
+                }else if(nodoDer.type == Tipo.DOUBLE){
+                    if ( comparador != nodoDer.value) {
+                        retorno = {value: true, type: Tipo.BOOLEAN}
+                    } else {
+                        retorno = {value: false, type: Tipo.BOOLEAN}
+                    }
+                }else if(nodoDer.type == Tipo.CHAR){
+                    if (comparador != nodoDer.value.charCodeAt(0)) {
+                        retorno = {value: true, type: Tipo.BOOLEAN}
+                    } else {
+                        retorno = {value: false, type: Tipo.BOOLEAN}
+                    }
+                }else {
+                    //ERROR
+                    const error = new Excepcion("Error semántico", `boolean comparado con string\\NULL no es una operación relacional válida.`, this.line, this.column);
                     consola.set_Error(error);
                     retorno = {value: null, type: Tipo.ERROR}
                 }
             }else{ //Cualquier otro tipo de error
                 //ERROR
-                const error = new Excepcion("Error semántico", `la operación relacional de un boolean\\string\\NULL no es una operación relacional válida.`, this.line, this.column);
+                const error = new Excepcion("Error semántico", `la operación relacional de un string\\NULL no es una operación relacional válida.`, this.line, this.column);
                 consola.set_Error(error);
                 retorno = {value: null, type: Tipo.ERROR}
             }
