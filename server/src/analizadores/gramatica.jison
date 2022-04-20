@@ -108,6 +108,9 @@
         const { Println } = require('../instrucciones/Println.ts');
         const { Declaracion_Var } = require('../instrucciones/Declaracion_Var.ts');
         const { Asignacion } = require('../instrucciones/Asignacion.ts');
+        const { Bloque } = require('../instrucciones/Bloque.ts');
+                //Instrucciones de setntendias de control
+        const { If } = require('../instrucciones/sentencias_de_control/If.ts');
         //Importación de expresiones
         const { Literal } = require('../expresiones/Literal.ts');
         const { Identificador } = require('../expresiones/Identificador.ts');
@@ -221,8 +224,8 @@ LISTA_VALORES:
 ;
 
 INSTRUCCIONES:
-        INSTRUCCIONES INSTRUCCION {}
-        | INSTRUCCION {}
+        INSTRUCCIONES INSTRUCCION { $1.push($2); $$ = $1; }
+        | INSTRUCCION { $$ = [$1]; }
 ;
 
 INSTRUCCION: 
@@ -231,7 +234,7 @@ INSTRUCCION:
         |       FOR {}
         |       WHILE {}
         |       DO_WHILE {}
-        |       IF {}
+        |       IF { $$ = $1; }
         |       SWITCH {}
         |       ASIGNACION { $$ = $1; }
         |       INCREMENTO {}
@@ -242,15 +245,24 @@ INSTRUCCION:
         |       error puntoYcoma {
                         console.log("Error sintáctico en la línea: "+(yylineno + 1));
                         var consola = Consola.getInstance();
-                        const error = new Excepcion("Error sintáctico", "El caracter "+ (this.terminals_[symbol] || symbol)+" no se esperaba en esta posición.", this._$.first_line, this._$.first_column+1);
-                        consola.set_Error(error);
-        }
-;
+                        const excepcion1 = new Excepcion("Error sintáctico", "El caracter no se esperaba en esta posición.", this._$.first_line, this._$.first_column+1);
+                        consola.set_Error(excepcion1);
+                        }
+        |       { $$ = null;}
+;       
 
 FOR:;
 WHILE:;
 DO_WHILE:;
-IF:;
+
+IF: if  parentesisAbre EXPRESION parentesisCierra BLOQUE CONTROL_ELSE { $$ = new If($3, $5, $6, @1.first_line, @1.first_column); };
+
+CONTROL_ELSE:
+        else BLOQUE { $$ = $2; }
+        |       else IF { $$ = $2; }
+        |       { $$ = null; }
+;
+
 SWITCH:;
 ASIGNACION: identificador igual EXPRESION puntoYcoma { $$ = new Asignacion($1, $3, @1.first_line, @1.first_column); };
 INCREMENTO: identificador incremento puntoYcoma;
@@ -306,9 +318,14 @@ EXPRESION:
         |       error puntoYcoma {
                         console.log("Error sintáctico en la línea: "+(yylineno + 1));
                         var consola = Consola.getInstance();
-                        const error = new Excepcion("Error sintáctico", "El caracter "+ (this.terminals_[symbol] || symbol)+" no se esperaba en esta posición.", this._$.first_line, this._$.first_column+1);
-                        consola.set_Error(error);
+                        const excepcion2 = new Excepcion("Error sintáctico", "El caracter no se esperaba en esta posición.", this._$.first_line, this._$.first_column+1);
+                        consola.set_Error(excepcion2);  
         }
+;
+
+BLOQUE
+    : llaveAbre INSTRUCCIONES llaveCierra { $$ = new Bloque($2, @1.first_line, @1.first_column); }
+    | llaveAbre              llaveCierra { $$ = new Bloque(new Array(), @1.first_line, @1.first_column); }
 ;
 
 VALOR: EXPRESION {} ;

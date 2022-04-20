@@ -89,3 +89,21 @@ println(casteo5);
 println("===Incremento y decremento===");
 println(a++);
 println(c--);
+println("===If, else, y else if===");
+if(b == 10){
+    println("Funciona el if");
+    if(b == 11){
+        println("No funciona el if anidado");
+    }else{
+        println("Funciona else y else anidado");
+        if(b == 12){
+            println("No Funciona if y if anidado");
+        }else if(b == 10){
+            println("Funciona else if y else if anidado");
+        }else{
+            println("No Funciona else y else anidado");
+        }
+    }
+}else{
+    println("Error este no debería de generarse");
+}
