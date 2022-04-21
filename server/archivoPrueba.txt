@@ -93,6 +93,8 @@ println("===If, else, y else if===");
 if(b == 10){
     println("Funciona el if");
     string pruebaIf1 = "Estoy adentro del primer if";
+    pruebaIf1 = "funciona la actualización de la tabla de simbolos";
+    c = 20;
     if(b == 11){
         println("No funciona el if anidado");
     }else{
