@@ -4,13 +4,14 @@ import { Environment } from "../../simbolo/Environment";
 import { Tipo } from "../../abstracto/Retorno";
 import { Consola } from "../../consola_singleton/Consola";
 import { Instruccion } from "../../abstracto/Instruccion";
+import { Bloque } from "../Bloque";
 
 export class If extends Instruccion {
 
     constructor(
         private condition: Expresion,
-        private bloque: Instruccion,
-        private else_ElseIf: Instruccion | null,
+        private bloque: Bloque,
+        private else_ElseIf: Bloque | null,
         line: number,
         column: number
     ) {
@@ -27,9 +28,13 @@ export class If extends Instruccion {
         }
 
         if (expresion.value){
+            this.bloque.nombreAmbito = env.nombreAmbito+" -> if / else if";
             this.bloque.execute(env)
         }else{
-            this.else_ElseIf?.execute(env)
+            if(this.else_ElseIf != null){
+            this.else_ElseIf.nombreAmbito = env.nombreAmbito+" -> else";
+            this.else_ElseIf.execute(env)
+            }
         } 
 
     }

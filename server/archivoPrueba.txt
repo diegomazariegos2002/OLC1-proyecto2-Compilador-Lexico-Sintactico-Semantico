@@ -92,6 +92,7 @@ println(c--);
 println("===If, else, y else if===");
 if(b == 10){
     println("Funciona el if");
+    string pruebaIf1 = "Estoy adentro del primer if";
     if(b == 11){
         println("No funciona el if anidado");
     }else{
@@ -99,11 +100,13 @@ if(b == 10){
         if(b == 12){
             println("No Funciona if y if anidado");
         }else if(b == 10){
+            string pruebaIf2 = "Estoy adentro del primer if";
             println("Funciona else if y else if anidado");
         }else{
             println("No Funciona else y else anidado");
         }
     }
 }else{
-    println("Error este no debería de generarse");
+    println("Error en el else este no debería de generarse");
 }
+

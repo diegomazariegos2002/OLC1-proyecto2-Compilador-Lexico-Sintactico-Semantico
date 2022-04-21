@@ -1,4 +1,5 @@
 import { Excepcion } from "../errores/Excepcion";
+import { Simbolo } from "../simbolo/Simbolo";
 
 /**
  * Clase consola que se basa en el Patrón de diseño Consola
@@ -8,6 +9,7 @@ export class Consola {
     private consola: string = "";
     private ast: string = "";
     private errores: Excepcion[] = [];
+    private simbolos: Simbolo[] = [];
 
     private constructor(){}
 
@@ -22,6 +24,7 @@ export class Consola {
         this.consola = "";
         this.ast =  "";
         this.errores = [];
+        this.simbolos = [];
     }
 
     /**===================================== MÉTODOS GET AND SET ===================================== */
@@ -52,4 +55,11 @@ export class Consola {
         return this.errores;
     }
     
+    public set_Simbolo(data: Simbolo) {
+        this.simbolos.push(data);
+    }
+
+    public get_Simbolos() : Simbolo[] {
+        return this.simbolos;
+    }
 }

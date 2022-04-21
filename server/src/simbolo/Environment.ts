@@ -1,5 +1,6 @@
 import { Simbolo } from "./Simbolo";
 import { Tipo } from "../abstracto/Retorno"; 
+import { Consola } from "../consola_singleton/Consola";
 
 export class Environment{
     /**Mapa de variables */
@@ -11,7 +12,7 @@ export class Environment{
      * anterior para esta tabla de simbolos por lo que se crea su respectiva variable "anterior".
      * @param anterior 
      */
-    constructor(public anterior: Environment | null) {
+    constructor(public anterior: Environment | null, public nombreAmbito: string) {
         this.variables = new Map();
     }
 
@@ -20,16 +21,20 @@ export class Environment{
      * @param id nombre de la variable
      * @param valor valor de la variable
      * @param tipo tipo de dato de la variable
+     * @param ambito ambito en el cual fue declarada la variable
      * @param editable para validar si la variable es editable o no como en el caso de métodos y funciones que no son editables
      * @returns boolan si se efectuo el almacenamiento de la variable
      */
-    public guardar_variable(nombre: string, valor: any, tipo: Tipo, editable: boolean): boolean {
+    public guardar_variable(nombre: string, valor: any, tipo: Tipo, ambito:string, editable: boolean, linea: number, columna: number): boolean {
 
         //revisar que el nombre de la nueva variable se encuentre disponible
         if (this.revisarRepetido(nombre)) return false
 
         //agrega la variable al MAP 
-        this.variables.set(nombre, new Simbolo(valor, nombre, tipo, editable))
+        var simbolo: Simbolo = new Simbolo(valor, nombre, tipo, ambito, this.getTipo(tipo), editable, linea, columna);
+        this.variables.set(nombre, simbolo)
+        var consola = Consola.getInstance();
+        consola.set_Simbolo(simbolo);
         return true
     }
 
@@ -76,10 +81,43 @@ export class Environment{
      */
     public revisarRepetido(nombre: string): boolean {
         //revisar en las variables almacenadas
+        var environmentActual: Environment | null = this.anterior;
+
         for (let entry of Array.from(this.variables.entries())) {
             if (entry[0] == nombre) return true;
         }
+
+        while(environmentActual != null){ //verificar si no existe la variable en el resto de ámbitos atrás.
+
+            for (let entry of Array.from(environmentActual.variables.entries())) {
+                if (entry[0] == nombre) return true;
+            }
+
+            environmentActual = environmentActual.anterior;
+        }
+
         //no encontro el nombre , osea que esta disponible para usar
         return false
+    }
+
+    public getTipo(tipo: Tipo): string{
+        switch(tipo){
+            case Tipo.INT:
+                return "int";
+            case Tipo.DOUBLE:
+                return "double";
+            case Tipo.CHAR:
+                return "char";
+            case Tipo.STRING:
+                return "string";
+            case Tipo.BOOLEAN:
+                return "boolean";
+            case Tipo.VOID:
+                return "void";
+            case Tipo.VECTOR:
+                return "vector";
+            default:
+                return "error";
+        }
     }
 }

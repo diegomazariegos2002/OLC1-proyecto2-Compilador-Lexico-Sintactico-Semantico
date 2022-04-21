@@ -30,7 +30,7 @@ app.post('/analizar', function(request:any, response:any){
     //realizando el analisis de la entrada.
     consola.set_Ast("digraph G { \nnode[shape=box];\nnodeInicio[label=\"<\\ INICIO \\>\"];\n\n");
     const ast = parser.parse(entrada);
-    const env = new Environment(null); 
+    const env = new Environment(null, "global"); 
     var cont = 0;
     var inst_line_anterior = 0;
     var inst_col_anterior = 0;
@@ -63,6 +63,7 @@ app.post('/analizar', function(request:any, response:any){
         consola: consola.getConsola(),
         errores: consola.get_Errores(),
         ast: consola.get_Ast(),
+        simbolos: consola.get_Simbolos(),
         resultado: ast
     }
     response.json(salida)

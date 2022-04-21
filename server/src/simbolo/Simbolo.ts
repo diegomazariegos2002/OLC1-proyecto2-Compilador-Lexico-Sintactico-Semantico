@@ -10,7 +10,11 @@ export class Simbolo {
         public valor: any,
         public id: string,
         public tipo: Tipo,
-        public editable: boolean
+        public ambito: string,
+        public tipoString: string,
+        public editable: boolean,
+        public linea: number,
+        public columna: number
     ) {
 
     }

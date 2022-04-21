@@ -3,6 +3,7 @@ import { Consola } from "../consola_singleton/Consola"
 import { Environment } from "../simbolo/Environment"
 
 export class Bloque extends Instruccion {
+    public nombreAmbito: string = "";
 
     constructor(
         private instrucciones: Array<Instruccion>,
@@ -14,7 +15,7 @@ export class Bloque extends Instruccion {
 
     public execute(env: Environment) {
 
-        const newEnv = new Environment(env)
+        const newEnv = new Environment(env, this.nombreAmbito)
 
         //Ejecutar las instrucciones del bloque.
         for (const instrucciones of this.instrucciones) {

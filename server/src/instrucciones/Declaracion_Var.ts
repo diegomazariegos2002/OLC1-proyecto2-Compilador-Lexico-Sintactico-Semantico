@@ -61,7 +61,7 @@ export class Declaracion_Var extends Instruccion {
             //Para cada variable en la lista de nombres la va a guardar en su respectivo ambiente o tabla de simbolos.
             for (let index = 0; index < this.lista_nombres.length; index++) {
                 const nombreVarActual = this.lista_nombres[index];
-                const todoBien = environment.guardar_variable(nombreVarActual, retorno_Exp.value, this.tipo, true);
+                const todoBien = environment.guardar_variable(nombreVarActual, retorno_Exp.value, this.tipo, environment.nombreAmbito, true, this.line, this.column);
                 if(todoBien == false){
                     const error = new Excepcion("Error semántico", "declaración inválidad, la variable "+nombreVarActual+" declarada ya existe", this.line, this.column);
                     consola.set_Error(error);
@@ -71,7 +71,7 @@ export class Declaracion_Var extends Instruccion {
             /**Paso 1) Crear las variables con su valor por defecto según su tipo */
             for (let index = 0; index < this.lista_nombres.length; index++) {
                 const nombreVarActual = this.lista_nombres[index];
-                const todoBien = environment.guardar_variable(nombreVarActual, this.defaultValue(this.tipo), this.tipo, true);
+                const todoBien = environment.guardar_variable(nombreVarActual, this.defaultValue(this.tipo), this.tipo, environment.nombreAmbito, true, this.line, this.column);
                 if(todoBien == false){
                     const error = new Excepcion("Error semántico", "declaración inválidad, la variable "+nombreVarActual+" declarada ya existe", this.line, this.column);
                     consola.set_Error(error);

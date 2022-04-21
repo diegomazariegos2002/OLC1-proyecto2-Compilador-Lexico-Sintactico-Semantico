@@ -43,22 +43,22 @@
             <tr>
               <th scope="col">#</th>
               <th scope="col">Nombre</th>
-              <th scope="col">Tipo símbolo</th>
-              <th scope="col">Tipo dato</th>
+              <th scope="col">Tipo</th>
+              <th scope="col">Valor</th>
               <th scope="col">Ámbito</th>
               <th scope="col">Fila</th>
               <th scope="col">Columna</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <th scope="row"></th>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
+            <tr *ngFor="let simbolo of consola.simbolos; let i = index">
+              <th scope="row">{{i + 1}}</th>
+              <td>{{simbolo.id}}</td>
+              <td>{{simbolo.tipoString}}</td>
+              <td>{{simbolo.valor}}</td>
+              <td>{{simbolo.ambito}}</td>
+              <td>{{simbolo.linea}}</td>
+              <td>{{simbolo.columna}}</td>
             </tr>
           </tbody>
         </table>
@@ -81,12 +81,12 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <th scope="row"></th>
-              <td></td>
-              <td class="fc"></td>
-              <td class="text-center"></td>
-              <td class="text-center"></td>
+            <tr *ngFor="let error of consola.errores; let i = index">
+              <th scope="row">{{i+1}}</th>
+              <td>{{error.titulo}}</td>
+              <td class="fc">{{error.descripcion}}</td>
+              <td class="text-center">{{error.linea}}</td>
+              <td class="text-center">{{error.columna}}</td>
             </tr>
           </tbody>
         </table>

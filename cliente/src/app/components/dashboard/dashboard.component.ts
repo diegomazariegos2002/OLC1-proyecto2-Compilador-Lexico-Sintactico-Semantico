@@ -12,7 +12,9 @@ export class DashboardComponent implements OnInit {
   consola:any = 
   {
     entrada:'',
-    salida:''
+    salida:'',
+    errores: [],
+    simbolos: []
   }
 
   ngOnInit(): void {
@@ -28,6 +30,8 @@ export class DashboardComponent implements OnInit {
         if(this.consola.salida !== undefined){
           this.consola.salida = JsonRespuesta.consola;
           this.consola.ast = JsonRespuesta.ast;
+          this.consola.errores = JsonRespuesta.errores;
+          this.consola.simbolos = JsonRespuesta.simbolos;
         }
       }, 
       //Si sucede un error en la petición
