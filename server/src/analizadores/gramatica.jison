@@ -263,7 +263,22 @@ CONTROL_ELSE:
         |       { $$ = null; }
 ;
 
-SWITCH:;
+SWITCH: switch parentesisAbre EXPRESION parentesisCierra llaveAbre CASELIST DEFAULT llaveCierra {};
+
+CASELIST: 
+        CASELIST case EXPRESION dosPuntos INSTRUCCIONES {}
+        |       CASELIST case EXPRESION dosPuntos INSTRUCCIONES break puntoYcoma {}
+        |       case EXPRESION dosPuntos INSTRUCCIONES {}
+        |       case EXPRESION dosPuntos INSTRUCCIONES  break puntoYcoma{}
+        |       {$$ = null;}
+;
+
+DEFAULT: 
+        default dosPuntos INSTRUCCIONES break puntoYcoma {}
+        |       default dosPuntos INSTRUCCIONES {}
+        |       { $$ = null; }
+;
+
 ASIGNACION: identificador igual EXPRESION puntoYcoma { $$ = new Asignacion($1, $3, @1.first_line, @1.first_column); };
 INCREMENTO: identificador incremento puntoYcoma;
 DECREMENTO: identificador decremento puntoYcoma;

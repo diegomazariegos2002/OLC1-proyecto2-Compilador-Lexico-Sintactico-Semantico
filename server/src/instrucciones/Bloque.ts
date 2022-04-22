@@ -19,21 +19,31 @@ export class Bloque extends Instruccion {
 
         //Ejecutar las instrucciones del bloque.
         for (const instrucciones of this.instrucciones) {
-                const instruccion = instrucciones.execute(newEnv);
+            const instruccion = instrucciones.execute(newEnv);
         }
 
     }
-    
+
     public ast() {
 
         const consola = Consola.getInstance()
-        const name_node = `Bloque_${this.line}_${this.column}_`
+        const name_node = `instruccion_${this.line}_${this.column}_`
         consola.set_Ast(`
-        ${name_node}[label="Bloque de instrucciones"];        
+        ${name_node}[label="\\<Nuevo ámbito\\>"];        
         `)
-        this.instrucciones.forEach(x => {
-            consola.set_Ast(`${name_node}->instruccion_${x.line}_${x.column}_;`)
-            x.ast()
+        var cont = 0;
+        var inst_line_anterior = 0;
+        var inst_col_anterior = 0;
+        this.instrucciones.forEach(instruccion => {
+            if (cont == 0) {
+                consola.set_Ast(`${name_node}->instruccion_${instruccion.line}_${instruccion.column}_;`)
+            }else{
+                consola.set_Ast(`instruccion_${inst_line_anterior}_${inst_col_anterior}_->instruccion_${instruccion.line}_${instruccion.column}_;`)
+            }
+            inst_line_anterior = instruccion.line;
+            inst_col_anterior = instruccion.column;
+            instruccion.ast()
+            cont++;
         })
 
     }

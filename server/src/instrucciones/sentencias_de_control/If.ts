@@ -41,17 +41,17 @@ export class If extends Instruccion {
 
     public ast() {
         const consola = Consola.getInstance()
-        const name_node = `node_${this.line}_${this.column}_`
+        const name_node = `instruccion_${this.line}_${this.column}_`
         consola.set_Ast(`
-        ${name_node}[label="\\<Instruccion\\>\\nif"];
-        ${name_node}1[label="\\<True\\>"];
-        ${name_node}2[label="\\<Else\\>"];
+        ${name_node}[label="\\<Instruccion\\>\\nIf / Else if / Else"];
+        ${name_node}1[label="\\<Sentencia if\\>"];
+        ${name_node}2[label="\\<Sentencia else\\>"];
         ${name_node}->${name_node}1;
         ${name_node}->${name_node}2;
-        ${name_node}1->node_${this.bloque.line}_${this.bloque.column}_;`)
+        ${name_node}1->instruccion_${this.bloque.line}_${this.bloque.column}_;`)
         this.bloque.ast()
         if (this.else_ElseIf != null) {
-            consola.set_Ast(`${name_node}2->node_${this.else_ElseIf.line}_${this.else_ElseIf.column}_`)
+            consola.set_Ast(`${name_node}2->instruccion_${this.else_ElseIf.line}_${this.else_ElseIf.column}_`)
             this.else_ElseIf.ast()
         }
     }

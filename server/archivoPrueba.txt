@@ -108,7 +108,5 @@ if(b == 10){
             println("No Funciona else y else anidado");
         }
     }
-}else{
-    println("Error en el else este no debería de generarse");
 }
 
