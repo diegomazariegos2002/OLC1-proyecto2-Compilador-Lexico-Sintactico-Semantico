@@ -110,3 +110,17 @@ if(b == 10){
     }
 }
 
+switch(a){
+    case 1:
+        println("No debería de ejecutarme switch");
+        break;
+    case 20:
+        println("funciono bien");
+    case 20:
+        println("funciono bien sin el break del case de arriba");
+        string e = "prueba switch";
+        break;
+    default:
+        println("Funciono el default");
+        break;
+}

@@ -111,6 +111,9 @@
         const { Bloque } = require('../instrucciones/Bloque.ts');
                 //Instrucciones de setntendias de control
         const { If } = require('../instrucciones/sentencias_de_control/If.ts');
+        const { Switch } = require('../instrucciones/sentencias_de_control/Switch.ts');
+        const { Case } = require('../instrucciones/sentencias_de_control/Case.ts');
+        const { Default } = require('../instrucciones/sentencias_de_control/Default.ts');
         //Importación de expresiones
         const { Literal } = require('../expresiones/Literal.ts');
         const { Identificador } = require('../expresiones/Identificador.ts');
@@ -263,19 +266,19 @@ CONTROL_ELSE:
         |       { $$ = null; }
 ;
 
-SWITCH: switch parentesisAbre EXPRESION parentesisCierra llaveAbre CASELIST DEFAULT llaveCierra {};
+SWITCH: switch parentesisAbre EXPRESION parentesisCierra llaveAbre CASELIST DEFAULT llaveCierra { $$ = new Switch($3, $6, $7, @1.first_line, @1.first_column); };
 
 CASELIST: 
-        CASELIST case EXPRESION dosPuntos INSTRUCCIONES {}
-        |       CASELIST case EXPRESION dosPuntos INSTRUCCIONES break puntoYcoma {}
-        |       case EXPRESION dosPuntos INSTRUCCIONES {}
-        |       case EXPRESION dosPuntos INSTRUCCIONES  break puntoYcoma{}
+        CASELIST case EXPRESION dosPuntos INSTRUCCIONES { $1.push(new Case($3, $5, false, @1.first_line, @1.first_column)); $$ = $1; }
+        |       CASELIST case EXPRESION dosPuntos INSTRUCCIONES break puntoYcoma { $1.push(new Case($3, $5, true, @1.first_line, @1.first_column)); $$ = $1; }
+        |       case EXPRESION dosPuntos INSTRUCCIONES { $$ = [new Case($2, $4, false, @1.first_line, @1.first_column)]; }
+        |       case EXPRESION dosPuntos INSTRUCCIONES  break puntoYcoma{ $$ = [new Case($2, $4, true, @1.first_line, @1.first_column)]; }
         |       {$$ = null;}
 ;
 
 DEFAULT: 
-        default dosPuntos INSTRUCCIONES break puntoYcoma {}
-        |       default dosPuntos INSTRUCCIONES {}
+        default dosPuntos INSTRUCCIONES break puntoYcoma { $$ = new Default($3, true, @1.first_line, @1.first_column); }
+        |       default dosPuntos INSTRUCCIONES { $$ = new Default($3, false, @1.first_line, @1.first_column); }
         |       { $$ = null; }
 ;
 
