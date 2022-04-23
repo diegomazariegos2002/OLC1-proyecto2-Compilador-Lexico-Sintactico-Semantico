@@ -72,6 +72,49 @@ export class For extends Instruccion {
     }
 
     public ast() {
+        const consola = Consola.getInstance()
+        const name_node = `instruccion_${this.line}_${this.column}_`
+        consola.set_Ast(`
+        ${name_node}[label="\\<Instruccion\\>\\nFor"];
+        ${name_node}Ambito[label="\\<Nuevo ámbito\\>\\n"];
+        ${name_node}->${name_node}Ambito;
+        ${name_node}1[label="\\<Declaración For\\>"];
+        ${name_node}2[label="\\<Condición For\\>"];
+        ${name_node}3[label="\\<Iteración For\\>"];
+        ${name_node}4[label="\\<Cuerpo For\\>"];
+        ${name_node}Ambito->${name_node}1;
+        ${name_node}Ambito->${name_node}2;
+        ${name_node}Ambito->${name_node}3;
+        ${name_node}Ambito->${name_node}4;
+        `)
+        
+        //Unión a la parte declaración
+        if(this.declaracion instanceof Expresion){
+            consola.set_Ast(`${name_node}1->${this.declaracion.ast()}`);
+        }else{
+            consola.set_Ast(`${name_node}1->instruccion_${this.declaracion.line}_${this.declaracion.column}_;`);
+            this.declaracion.ast();
+        }
 
+        //Unión a la parte condicional
+        consola.set_Ast(`
+        ${name_node}2->${this.condition.ast()}
+        `)
+
+        //Unión a la parte iterativa
+        if(this.iteracion instanceof Expresion){
+            consola.set_Ast(`${name_node}3->${this.iteracion.ast()}
+            `);
+        }else{
+            consola.set_Ast(`${name_node}3->instruccion_${this.iteracion.line}_${this.iteracion.column}_;
+            `);
+            this.iteracion.ast()
+        }
+
+        //Conectando el cuerpo de for.
+        consola.set_Ast(`
+        ${name_node}4->instruccion_${this.bloque?.line}_${this.bloque?.column}_;
+        `)
+        this.bloque?.ast()
     }
 }

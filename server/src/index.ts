@@ -57,6 +57,10 @@ app.post('/analizar', function(request:any, response:any){
 
     consola.set_Ast("}"); //para cerrar el dot porque es más práctico hacerlo aquí que en la gramática
 
+    const simbolosSinRepetir = consola.get_Simbolos().filter(function(ele , pos){
+        return consola.get_Simbolos().indexOf(ele) == pos;
+    }) 
+
     /* Salida de datos */ 
     var salida = 
     {
@@ -64,11 +68,15 @@ app.post('/analizar', function(request:any, response:any){
         consola: consola.getConsola(),
         errores: consola.get_Errores(),
         ast: consola.get_Ast(),
-        simbolos: consola.get_Simbolos(),
+        simbolos: simbolosSinRepetir,
         resultado: ast
     }
     response.json(salida)
 })
+
+
+
+/**========================Métodos de conexión al cliente fundamentales========================*/
 
 app.listen(puerto, function(){
     console.log('app escuchando en el puerto 8080')
