@@ -109,11 +109,14 @@
         const { Declaracion_Var } = require('../instrucciones/Declaracion_Var.ts');
         const { Asignacion } = require('../instrucciones/Asignacion.ts');
         const { Bloque } = require('../instrucciones/Bloque.ts');
-                //Instrucciones de setntendias de control
+                //Instrucciones de sentencias de control
         const { If } = require('../instrucciones/sentencias_de_control/If.ts');
         const { Switch } = require('../instrucciones/sentencias_de_control/Switch.ts');
         const { Case } = require('../instrucciones/sentencias_de_control/Case.ts');
         const { Default } = require('../instrucciones/sentencias_de_control/Default.ts');
+                //Instrucciones aritmeticas
+        const { Incremento_Ins } = require('../instrucciones/aritmetica/Incremento_Ins.ts');        
+        const { Decremento_Ins } = require('../instrucciones/aritmetica/Decremento_Ins.ts');
         //Importación de expresiones
         const { Literal } = require('../expresiones/Literal.ts');
         const { Identificador } = require('../expresiones/Identificador.ts');
@@ -240,8 +243,8 @@ INSTRUCCION:
         |       IF { $$ = $1; }
         |       SWITCH {}
         |       ASIGNACION { $$ = $1; }
-        |       INCREMENTO {}
-        |       DECREMENTO {}
+        |       INCREMENTO { $$ = $1; }
+        |       DECREMENTO { $$ = $1; }
         |       LLAMADA {}
         |       PRINT {$$ = $1;}
         |       PRINTLN {}
@@ -254,7 +257,19 @@ INSTRUCCION:
         |       { $$ = null;}
 ;       
 
-FOR:;
+FOR: for parentesisAbre FOR_DECLARACION puntoYcoma EXPRESION puntoYcoma FOR_ITERADOR parentesisCierra BLOQUE {};
+
+FOR_DECLARACION:
+                DECLARACION_VAR { $$ = $1; }
+                |       ASIGNACION { $$ = $1; }
+;
+
+FOR_ITERADOR: 
+                ASIGNACION { $$ = $1; }
+                |       INCREMENTO { $$ = $1; }
+                |       DECREMENTO { $$ = $1; }
+;
+
 WHILE:;
 DO_WHILE:;
 
@@ -269,10 +284,10 @@ CONTROL_ELSE:
 SWITCH: switch parentesisAbre EXPRESION parentesisCierra llaveAbre CASELIST DEFAULT llaveCierra { $$ = new Switch($3, $6, $7, @1.first_line, @1.first_column); };
 
 CASELIST: 
-        CASELIST case EXPRESION dosPuntos INSTRUCCIONES { $1.push(new Case($3, $5, false, @1.first_line, @1.first_column)); $$ = $1; }
-        |       CASELIST case EXPRESION dosPuntos INSTRUCCIONES break puntoYcoma { $1.push(new Case($3, $5, true, @1.first_line, @1.first_column)); $$ = $1; }
-        |       case EXPRESION dosPuntos INSTRUCCIONES { $$ = [new Case($2, $4, false, @1.first_line, @1.first_column)]; }
-        |       case EXPRESION dosPuntos INSTRUCCIONES  break puntoYcoma{ $$ = [new Case($2, $4, true, @1.first_line, @1.first_column)]; }
+        CASELIST case EXPRESION dosPuntos INSTRUCCIONES { $1.push(new Case($3, $5, false, @1.first_line, @1.first_column, $1.length)); $$ = $1; }
+        |       CASELIST case EXPRESION dosPuntos INSTRUCCIONES break puntoYcoma { $1.push(new Case($3, $5, true, @1.first_line, @1.first_column, $1.length)); $$ = $1; }
+        |       case EXPRESION dosPuntos INSTRUCCIONES { $$ = [new Case($2, $4, false, @1.first_line, @1.first_column, 0)]; }
+        |       case EXPRESION dosPuntos INSTRUCCIONES  break puntoYcoma{ $$ = [new Case($2, $4, true, @1.first_line, @1.first_column, 0)]; }
         |       {$$ = null;}
 ;
 
@@ -283,8 +298,8 @@ DEFAULT:
 ;
 
 ASIGNACION: identificador igual EXPRESION puntoYcoma { $$ = new Asignacion($1, $3, @1.first_line, @1.first_column); };
-INCREMENTO: identificador incremento puntoYcoma;
-DECREMENTO: identificador decremento puntoYcoma;
+INCREMENTO: identificador incremento puntoYcoma { $$ = new Incremento_Ins($1, @1.first_line, @1.first_column); };
+DECREMENTO: identificador decremento puntoYcoma { $$ = new Decremento_Ins($1, @1.first_line, @1.first_column); };
 LLAMADA:;
 PRINT: print parentesisAbre EXPRESION parentesisCierra puntoYcoma { $$ = new Print($3, @1.first_line, @1.first_column); };
 PRINTLN:println parentesisAbre EXPRESION parentesisCierra puntoYcoma { $$ = new Println($3, @1.first_line, @1.first_column); };

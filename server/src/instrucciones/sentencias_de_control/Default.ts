@@ -27,6 +27,27 @@ export class Default extends Instruccion {
     }
 
     public ast() {
-        
+        const consola = Consola.getInstance()
+        var name_node = `instruccion_${this.line}_${this.column}_`
+        consola.set_Ast(`
+        ${name_node}[label="\\<Instrucción\\>\\nDefault"];        
+        ${name_node}_AmbitoDefault[label="\\<Nuevo ámbito\\>"];
+        ${name_node} -> ${name_node}_AmbitoDefault;
+        `)
+        name_node = `${name_node}_AmbitoDefault`;
+        var cont = 0;
+        var inst_line_anterior = 0;
+        var inst_col_anterior = 0;
+        this.lista_instrucciones?.forEach(instruccion => {
+            if (cont == 0) {
+                consola.set_Ast(`${name_node}->instruccion_${instruccion.line}_${instruccion.column}_;`)
+            }else{
+                consola.set_Ast(`instruccion_${inst_line_anterior}_${inst_col_anterior}_->instruccion_${instruccion.line}_${instruccion.column}_;`)
+            }
+            inst_line_anterior = instruccion.line;
+            inst_col_anterior = instruccion.column;
+            instruccion.ast()
+            cont++;
+        })       
     }
 }

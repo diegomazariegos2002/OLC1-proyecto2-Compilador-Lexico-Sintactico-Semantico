@@ -124,3 +124,5 @@ switch(a){
         println("Funciono el default");
         break;
 }
+a++;
+b--;
