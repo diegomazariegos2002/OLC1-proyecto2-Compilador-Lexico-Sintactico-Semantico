@@ -124,5 +124,13 @@ switch(a){
         println("Funciono el default");
         break;
 }
+println("prueba de ins incremento y decremento");
 a++;
 b--;
+println("prueba de for's");
+for(int i = 0; i < 10; i++){
+    println(i);
+}
+for(int i = 10; i > 0; i--){
+    println(i);
+}

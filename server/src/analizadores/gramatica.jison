@@ -114,6 +114,8 @@
         const { Switch } = require('../instrucciones/sentencias_de_control/Switch.ts');
         const { Case } = require('../instrucciones/sentencias_de_control/Case.ts');
         const { Default } = require('../instrucciones/sentencias_de_control/Default.ts');
+                //Instrucciones ciclicas
+        const { For } = require('../instrucciones/sentencias_ciclicas/For.ts');
                 //Instrucciones aritmeticas
         const { Incremento_Ins } = require('../instrucciones/aritmetica/Incremento_Ins.ts');        
         const { Decremento_Ins } = require('../instrucciones/aritmetica/Decremento_Ins.ts');
@@ -237,14 +239,14 @@ INSTRUCCIONES:
 INSTRUCCION: 
         DECLARACION_VAR {}
         |       DECLARACION_VECT {}
-        |       FOR {}
+        |       FOR { $$ = $1; }
         |       WHILE {}
         |       DO_WHILE {}
         |       IF { $$ = $1; }
         |       SWITCH {}
-        |       ASIGNACION { $$ = $1; }
-        |       INCREMENTO { $$ = $1; }
-        |       DECREMENTO { $$ = $1; }
+        |       ASIGNACION puntoYcoma { $$ = $1; }
+        |       INCREMENTO puntoYcoma{ $$ = $1; }
+        |       DECREMENTO puntoYcoma{ $$ = $1; }
         |       LLAMADA {}
         |       PRINT {$$ = $1;}
         |       PRINTLN {}
@@ -257,7 +259,7 @@ INSTRUCCION:
         |       { $$ = null;}
 ;       
 
-FOR: for parentesisAbre FOR_DECLARACION puntoYcoma EXPRESION puntoYcoma FOR_ITERADOR parentesisCierra BLOQUE {};
+FOR: for parentesisAbre FOR_DECLARACION EXPRESION puntoYcoma FOR_ITERADOR parentesisCierra BLOQUE { $$ = new For($3, $4, $6, $8, @1.first_line, @1.first_column); };
 
 FOR_DECLARACION:
                 DECLARACION_VAR { $$ = $1; }
@@ -297,9 +299,9 @@ DEFAULT:
         |       { $$ = null; }
 ;
 
-ASIGNACION: identificador igual EXPRESION puntoYcoma { $$ = new Asignacion($1, $3, @1.first_line, @1.first_column); };
-INCREMENTO: identificador incremento puntoYcoma { $$ = new Incremento_Ins($1, @1.first_line, @1.first_column); };
-DECREMENTO: identificador decremento puntoYcoma { $$ = new Decremento_Ins($1, @1.first_line, @1.first_column); };
+ASIGNACION: identificador igual EXPRESION { $$ = new Asignacion($1, $3, @1.first_line, @1.first_column); };
+INCREMENTO: identificador incremento { $$ = new Incremento_Ins($1, @1.first_line, @1.first_column); };
+DECREMENTO: identificador decremento { $$ = new Decremento_Ins($1, @1.first_line, @1.first_column); };
 LLAMADA:;
 PRINT: print parentesisAbre EXPRESION parentesisCierra puntoYcoma { $$ = new Print($3, @1.first_line, @1.first_column); };
 PRINTLN:println parentesisAbre EXPRESION parentesisCierra puntoYcoma { $$ = new Println($3, @1.first_line, @1.first_column); };

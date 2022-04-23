@@ -25,6 +25,7 @@ export class If extends Instruccion {
         if (expresion.type != Tipo.BOOLEAN){
             const error = new Excepcion("Error semántico", `condición no válida en sentencia de control if`, this.line, this.column);
             consola.set_Error(error);
+            return;
         }
 
         if (expresion.value){

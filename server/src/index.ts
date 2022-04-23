@@ -48,6 +48,7 @@ app.post('/analizar', function(request:any, response:any){
             
             instruccion.execute(env)
             instruccion.ast()
+
         }catch(error){
             console.log("soy un error"+error)
         }
