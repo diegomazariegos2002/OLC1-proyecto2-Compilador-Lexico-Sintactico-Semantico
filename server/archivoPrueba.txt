@@ -128,9 +128,15 @@ println("prueba de ins incremento y decremento");
 a++;
 b--;
 println("prueba de for's");
+int j = 0;
 for(int i = 0; i < 10; i++){
+    string n = "hola";
     println(i);
 }
 for(int i = 10; i > 0; i--){
+    string n = "mundo";
     println(i);
+}
+for( j = 1; j < 10; j = j + 1){
+    println("funciono for's "+j);
 }

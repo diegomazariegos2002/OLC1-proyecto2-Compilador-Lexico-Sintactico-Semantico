@@ -186,7 +186,7 @@ ENTRADA:
         FUNCION {}
         |   METODO {}
         |   RUN {}
-        |   DECLARACION_VAR {}
+        |   DECLARACION_VAR puntoYcoma {}
         |   DECLARACION_VECT {}
         |   INSTRUCCION { $$ = $1; }
 ;
@@ -211,8 +211,8 @@ RUN:
 ;
 
 DECLARACION_VAR: 
-            TIPO LISTA_VARIABLES puntoYcoma { $$ = new Declaracion_Var($2, null, $1, @1.first_line, @1.first_column); }
-            |   TIPO LISTA_VARIABLES igual EXPRESION puntoYcoma { $$ = new Declaracion_Var($2, $4, $1, @1.first_line, @1.first_column); }
+            TIPO LISTA_VARIABLES { $$ = new Declaracion_Var($2, null, $1, @1.first_line, @1.first_column); }
+            |   TIPO LISTA_VARIABLES igual EXPRESION { $$ = new Declaracion_Var($2, $4, $1, @1.first_line, @1.first_column); }
 ;
 
 LISTA_VARIABLES: 
@@ -237,7 +237,7 @@ INSTRUCCIONES:
 ;
 
 INSTRUCCION: 
-        DECLARACION_VAR {}
+        DECLARACION_VAR puntoYcoma{}
         |       DECLARACION_VECT {}
         |       FOR { $$ = $1; }
         |       WHILE {}
@@ -259,7 +259,7 @@ INSTRUCCION:
         |       { $$ = null;}
 ;       
 
-FOR: for parentesisAbre FOR_DECLARACION EXPRESION puntoYcoma FOR_ITERADOR parentesisCierra BLOQUE { $$ = new For($3, $4, $6, $8, @1.first_line, @1.first_column); };
+FOR: for parentesisAbre FOR_DECLARACION puntoYcoma EXPRESION puntoYcoma FOR_ITERADOR parentesisCierra BLOQUE { $$ = new For($3, $5, $7, $9, @1.first_line, @1.first_column); };
 
 FOR_DECLARACION:
                 DECLARACION_VAR { $$ = $1; }
