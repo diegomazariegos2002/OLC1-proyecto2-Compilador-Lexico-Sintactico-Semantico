@@ -12,7 +12,7 @@ export class Environment{
      * anterior para esta tabla de simbolos por lo que se crea su respectiva variable "anterior".
      * @param anterior 
      */
-    constructor(public anterior: Environment | null, public nombreAmbito: string) {
+    constructor(public anterior: Environment | null, public recorridoAmbito: string) {
         this.variables = new Map();
     }
 

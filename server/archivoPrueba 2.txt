@@ -1,0 +1,16 @@
+int j = 0;
+println("for anidado en otro for");
+for(int i = 1; i < 5; i++){
+    for(j = 0; j < 10; j++){
+        int forAnidado = i * j;
+        println(forAnidado);
+        if(j != 5){
+        }else{
+            println("me active break en el else del for anidado");
+            break;
+        }
+    }
+    if(i == 3){
+        break;
+    }
+}

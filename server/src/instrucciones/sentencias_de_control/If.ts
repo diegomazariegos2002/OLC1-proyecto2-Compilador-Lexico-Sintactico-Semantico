@@ -10,8 +10,8 @@ export class If extends Instruccion {
 
     constructor(
         private condition: Expresion,
-        private bloque: Bloque,
-        private else_ElseIf: Bloque | null,
+        public bloque: Bloque,
+        public else_ElseIf: Bloque | null,
         line: number,
         column: number
     ) {
@@ -29,11 +29,11 @@ export class If extends Instruccion {
         }
 
         if (expresion.value){
-            this.bloque.nombreAmbito = env.nombreAmbito+" -> if / else if";
+            this.bloque.recorridoAmbito = env.recorridoAmbito+" -> if / else if";
             this.bloque.execute(env)
         }else{
             if(this.else_ElseIf != null){
-            this.else_ElseIf.nombreAmbito = env.nombreAmbito+" -> else";
+            this.else_ElseIf.recorridoAmbito = env.recorridoAmbito+" -> else";
             this.else_ElseIf.execute(env)
             }
         } 

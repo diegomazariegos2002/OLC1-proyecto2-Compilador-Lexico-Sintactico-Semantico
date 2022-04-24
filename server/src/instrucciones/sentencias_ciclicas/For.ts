@@ -21,7 +21,7 @@ export class For extends Instruccion {
 
     public execute(env: Environment) {
         var consola = Consola.getInstance(); //instancia de la consola por posibles errores
-        const newEnv = new Environment(env, env.nombreAmbito + " -> Sentencias for")
+        const newEnv = new Environment(env, env.recorridoAmbito + " -> Sentencias for")
         var retorno_Decla: Retorno;
         var retorno_Iter: Retorno;
 
@@ -43,10 +43,10 @@ export class For extends Instruccion {
             return;
         }
 
-        while (exec_Condicion.value == true) {
+        while (exec_Condicion.value == true && this.bloque?.break_Encontrado == false) {
             
             if(this.bloque != null && this.bloque != undefined){
-                this.bloque.nombreAmbito = newEnv.nombreAmbito+" -> Cuerpo for";
+                this.bloque.recorridoAmbito = newEnv.recorridoAmbito+" -> Cuerpo for";
                 this.bloque.execute(newEnv)   
             }
             
@@ -65,10 +65,7 @@ export class For extends Instruccion {
             exec_Condicion = this.condition.execute(newEnv)
         }
 
-
-
-
-
+        if(this.bloque != null || this.bloque != undefined) this.bloque.break_Encontrado = false;
     }
 
     public ast() {

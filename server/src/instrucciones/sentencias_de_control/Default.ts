@@ -19,7 +19,7 @@ export class Default extends Instruccion {
 
     public execute(env: Environment) {
         var consola = Consola.getInstance(); //instancia de la consola por posibles errores
-        const newEnv = new Environment(env, env.nombreAmbito + " -> switch default")
+        const newEnv = new Environment(env, env.recorridoAmbito + " -> switch default")
 
         this.lista_instrucciones?.forEach(element => {
             element.execute(newEnv);

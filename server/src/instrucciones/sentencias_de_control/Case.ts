@@ -21,7 +21,7 @@ export class Case extends Instruccion {
 
     public execute(env: Environment) {
         var consola = Consola.getInstance(); //instancia de la consola por posibles errores
-        const newEnv = new Environment(env, env.nombreAmbito + " -> switch case")
+        const newEnv = new Environment(env, env.recorridoAmbito + " -> switch case")
 
         this.lista_instrucciones?.forEach(element => {
             element.execute(newEnv);

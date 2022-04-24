@@ -109,6 +109,8 @@
         const { Declaracion_Var } = require('../instrucciones/Declaracion_Var.ts');
         const { Asignacion } = require('../instrucciones/Asignacion.ts');
         const { Bloque } = require('../instrucciones/Bloque.ts');
+                //Sentecias de transición
+        const { Break } = require('../instrucciones/sentencias_de_transicion/Break.ts');
                 //Instrucciones de sentencias de control
         const { If } = require('../instrucciones/sentencias_de_control/If.ts');
         const { Switch } = require('../instrucciones/sentencias_de_control/Switch.ts');
@@ -244,6 +246,7 @@ INSTRUCCION:
         |       DO_WHILE {}
         |       IF { $$ = $1; }
         |       SWITCH {}
+        |       SENTENCIA_TRANSFERENCIA { $$ = $1;}
         |       ASIGNACION puntoYcoma { $$ = $1; }
         |       INCREMENTO puntoYcoma{ $$ = $1; }
         |       DECREMENTO puntoYcoma{ $$ = $1; }
@@ -361,6 +364,13 @@ EXPRESION:
 BLOQUE
     : llaveAbre INSTRUCCIONES llaveCierra { $$ = new Bloque($2, @1.first_line, @1.first_column); }
     | llaveAbre              llaveCierra { $$ = new Bloque(new Array(), @1.first_line, @1.first_column); }
+;
+
+SENTENCIA_TRANSFERENCIA:
+                        break puntoYcoma { $$ = new Break(@1.first_line, @1.first_column); } 
+                        |       continue puntoYcoma {}
+                        |       return EXPRESION puntoYcoma {}
+                        |       return puntoYcoma {}
 ;
 
 VALOR: EXPRESION {} ;

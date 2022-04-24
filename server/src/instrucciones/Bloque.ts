@@ -1,6 +1,8 @@
 import { Instruccion } from "../abstracto/Instruccion"
 import { Consola } from "../consola_singleton/Consola"
 import { Environment } from "../simbolo/Environment"
+import { If } from "./sentencias_de_control/If";
+import { Break } from "./sentencias_de_transicion/Break";
 
 /**
  * Recordar que esta clase Bloque la utilizo para poder trabajar
@@ -9,7 +11,10 @@ import { Environment } from "../simbolo/Environment"
  * porque estos no usaban la estructura de { Bloque } sino que solo eran case expresion: Instrucciones.
  */
 export class Bloque extends Instruccion {
-    public nombreAmbito: string = "";
+    public recorridoAmbito: string = "";
+    public break_Encontrado: boolean = false;
+    public continue_Encontrado: boolean = false;
+    public return_Encontrado: boolean = false;
 
     constructor(
         private instrucciones: Array<Instruccion>,
@@ -21,11 +26,28 @@ export class Bloque extends Instruccion {
 
     public execute(env: Environment) {
 
-        const newEnv = new Environment(env, this.nombreAmbito)
+        const newEnv = new Environment(env, this.recorridoAmbito)
 
         //Ejecutar las instrucciones del bloque.
-        for (const instrucciones of this.instrucciones) {
-            const instruccion = instrucciones.execute(newEnv);
+        for (const instruccion of this.instrucciones) {
+            if(instruccion instanceof Break == true){
+                console.log("se encontro break")
+                this.break_Encontrado = true;
+                break;
+            }
+            instruccion.execute(newEnv);
+
+            /**Los siguientes If son para validar los break dentro de if's*/
+            if(instruccion instanceof If == true){
+                if((<If>instruccion).bloque.break_Encontrado == true || (<If>instruccion).else_ElseIf?.break_Encontrado == true){
+                    (<If>instruccion).bloque.break_Encontrado = false;
+                    if((<If>instruccion).else_ElseIf != null){
+                        (<If>instruccion).else_ElseIf!.break_Encontrado = false;
+                    }
+                    this.break_Encontrado = true;
+                    break;
+                } 
+            }
         }
 
     }
