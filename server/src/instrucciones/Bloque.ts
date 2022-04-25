@@ -3,6 +3,7 @@ import { Consola } from "../consola_singleton/Consola"
 import { Environment } from "../simbolo/Environment"
 import { If } from "./sentencias_de_control/If";
 import { Break } from "./sentencias_de_transicion/Break";
+import { Continue } from "./sentencias_de_transicion/Continue";
 
 /**
  * Recordar que esta clase Bloque la utilizo para poder trabajar
@@ -35,6 +36,13 @@ export class Bloque extends Instruccion {
                 this.break_Encontrado = true;
                 break;
             }
+
+            if(instruccion instanceof Continue == true){
+                console.log("se encontro continue")
+                this.continue_Encontrado = true;
+                break;
+            }
+
             instruccion.execute(newEnv);
 
             /**Los siguientes If son para validar los break dentro de if's*/
@@ -45,6 +53,17 @@ export class Bloque extends Instruccion {
                         (<If>instruccion).else_ElseIf!.break_Encontrado = false;
                     }
                     this.break_Encontrado = true;
+                    break;
+                } 
+            }
+            /**Los siguientes If son para validar los continue dentro de if's*/
+            if(instruccion instanceof If == true){
+                if((<If>instruccion).bloque.continue_Encontrado == true || (<If>instruccion).else_ElseIf?.continue_Encontrado == true){
+                    (<If>instruccion).bloque.continue_Encontrado = false;
+                    if((<If>instruccion).else_ElseIf != null){
+                        (<If>instruccion).else_ElseIf!.continue_Encontrado = false;
+                    }
+                    this.continue_Encontrado = true;
                     break;
                 } 
             }

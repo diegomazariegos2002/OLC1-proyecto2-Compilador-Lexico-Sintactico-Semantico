@@ -2,7 +2,8 @@ import { Excepcion } from "../../errores/Excepcion";
 import { Environment } from "../../simbolo/Environment";
 import { Consola } from "../../consola_singleton/Consola";
 import { Instruccion } from "../../abstracto/Instruccion";
-export class Break extends Instruccion {
+
+export class Continue extends Instruccion {
 
     constructor(
         line: number,
@@ -13,7 +14,7 @@ export class Break extends Instruccion {
 
     public execute(env: Environment) {
         var consola = Consola.getInstance(); //instancia de la consola por posibles errores
-        const error = new Excepcion("Error semántico", `la instrucción {break} solo tiene sentido adentro de una declaración de ciclo`, this.line, this.column);
+        const error = new Excepcion("Error semántico", `la instrucción {continue} solo tiene sentido adentro de una declaración de ciclo`, this.line, this.column);
         consola.set_Error(error);
     }
 
@@ -22,7 +23,7 @@ export class Break extends Instruccion {
         //Si me ejecuto quiere decir que soy un error porque el break no se tiene que ejecutar solo es una clase bandera.
         const name_node = `instruccion_${this.line}_${this.column}_`
         consola.set_Ast(`
-        ${name_node}[label="\\<Instrucción\\>\\nBreak"];        
+        ${name_node}[label="\\<Instrucción\\>\\nContinue"];        
         `)
     }
 }

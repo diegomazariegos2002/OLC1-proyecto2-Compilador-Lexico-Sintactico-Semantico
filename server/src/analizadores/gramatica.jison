@@ -111,6 +111,7 @@
         const { Bloque } = require('../instrucciones/Bloque.ts');
                 //Sentecias de transición
         const { Break } = require('../instrucciones/sentencias_de_transicion/Break.ts');
+        const { Continue } = require('../instrucciones/sentencias_de_transicion/Continue.ts');
                 //Instrucciones de sentencias de control
         const { If } = require('../instrucciones/sentencias_de_control/If.ts');
         const { Switch } = require('../instrucciones/sentencias_de_control/Switch.ts');
@@ -118,6 +119,8 @@
         const { Default } = require('../instrucciones/sentencias_de_control/Default.ts');
                 //Instrucciones ciclicas
         const { For } = require('../instrucciones/sentencias_ciclicas/For.ts');
+        const { While } = require('../instrucciones/sentencias_ciclicas/While.ts');
+        const { Do_While }  = require('../instrucciones/sentencias_ciclicas/Do_While.ts');
                 //Instrucciones aritmeticas
         const { Incremento_Ins } = require('../instrucciones/aritmetica/Incremento_Ins.ts');        
         const { Decremento_Ins } = require('../instrucciones/aritmetica/Decremento_Ins.ts');
@@ -239,20 +242,20 @@ INSTRUCCIONES:
 ;
 
 INSTRUCCION: 
-        DECLARACION_VAR puntoYcoma{}
+        DECLARACION_VAR puntoYcoma{ $$ = $1; }
         |       DECLARACION_VECT {}
         |       FOR { $$ = $1; }
-        |       WHILE {}
-        |       DO_WHILE {}
+        |       WHILE { $$ = $1; }
+        |       DO_WHILE { $$ = $1; }
         |       IF { $$ = $1; }
-        |       SWITCH {}
+        |       SWITCH { $$ = $1; }
         |       SENTENCIA_TRANSFERENCIA { $$ = $1;}
         |       ASIGNACION puntoYcoma { $$ = $1; }
         |       INCREMENTO puntoYcoma{ $$ = $1; }
         |       DECREMENTO puntoYcoma{ $$ = $1; }
         |       LLAMADA {}
-        |       PRINT {$$ = $1;}
-        |       PRINTLN {}
+        |       PRINT { $$ = $1; }
+        |       PRINTLN { $$ = $1; } 
         |       error puntoYcoma {
                         console.log("Error sintáctico en la línea: "+(yylineno + 1));
                         var consola = Consola.getInstance();
@@ -275,8 +278,11 @@ FOR_ITERADOR:
                 |       DECREMENTO { $$ = $1; }
 ;
 
-WHILE:;
-DO_WHILE:;
+WHILE: while parentesisAbre EXPRESION parentesisCierra BLOQUE { $$ = new While($3, $5, @1.first_line, @1.first_column); } ;
+
+
+DO_WHILE: do BLOQUE while parentesisAbre EXPRESION parentesisCierra puntoYcoma { $$ = new Do_While($2, $5, @1.first_line, @1.first_column); };
+
 
 IF: if  parentesisAbre EXPRESION parentesisCierra BLOQUE CONTROL_ELSE { $$ = new If($3, $5, $6, @1.first_line, @1.first_column); };
 
@@ -368,7 +374,7 @@ BLOQUE
 
 SENTENCIA_TRANSFERENCIA:
                         break puntoYcoma { $$ = new Break(@1.first_line, @1.first_column); } 
-                        |       continue puntoYcoma {}
+                        |       continue puntoYcoma { $$ = new Continue(@1.first_line, @1.first_column); }
                         |       return EXPRESION puntoYcoma {}
                         |       return puntoYcoma {}
 ;

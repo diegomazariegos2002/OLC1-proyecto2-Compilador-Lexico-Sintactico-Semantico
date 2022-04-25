@@ -12,7 +12,7 @@ export class For extends Instruccion {
         private declaracion: Expresion | Instruccion,
         private condition: Expresion,
         private iteracion: Expresion | Instruccion,
-        public bloque: Bloque | null,
+        public bloque: Bloque,
         line: number,
         column: number
     ) {
@@ -45,7 +45,7 @@ export class For extends Instruccion {
 
         while (exec_Condicion.value == true && this.bloque?.break_Encontrado == false) {
             
-            if(this.bloque != null && this.bloque != undefined){
+            if(this.bloque != null && this.bloque != undefined ){
                 this.bloque.recorridoAmbito = newEnv.recorridoAmbito+" -> Cuerpo for";
                 this.bloque.execute(newEnv)   
             }
