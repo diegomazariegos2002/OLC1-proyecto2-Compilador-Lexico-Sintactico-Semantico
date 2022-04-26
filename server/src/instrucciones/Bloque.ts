@@ -1,9 +1,11 @@
 import { Instruccion } from "../abstracto/Instruccion"
+import { Retorno, Tipo } from "../abstracto/Retorno";
 import { Consola } from "../consola_singleton/Consola"
 import { Environment } from "../simbolo/Environment"
 import { If } from "./sentencias_de_control/If";
 import { Break } from "./sentencias_de_transicion/Break";
 import { Continue } from "./sentencias_de_transicion/Continue";
+import { Return } from "./sentencias_de_transicion/Return";
 
 /**
  * Recordar que esta clase Bloque la utilizo para poder trabajar
@@ -16,6 +18,7 @@ export class Bloque extends Instruccion {
     public break_Encontrado: boolean = false;
     public continue_Encontrado: boolean = false;
     public return_Encontrado: boolean = false;
+    public valor_Return: Retorno = {value: null, type: Tipo.VOID};
 
     constructor(
         private instrucciones: Array<Instruccion>,
@@ -31,6 +34,19 @@ export class Bloque extends Instruccion {
 
         //Ejecutar las instrucciones del bloque.
         for (const instruccion of this.instrucciones) {
+
+            /**Para cuando en el bloque la instrucción a ejecutar sea un return; */
+            if (instruccion instanceof Return == true) {
+                console.log("se encontro return")
+                this.return_Encontrado = true;
+                //Se ejecuta la expresión que trae el Return.
+                const exec_Return = (<Return>instruccion).expresion?.execute(env);
+                if(exec_Return != null && exec_Return != undefined){ //Si el return si venía con una expresión
+                    this.valor_Return = exec_Return; //se actualiza el retorno de mi bloque
+                }
+                break;
+            }
+
             if(instruccion instanceof Break == true){
                 console.log("se encontro break")
                 this.break_Encontrado = true;

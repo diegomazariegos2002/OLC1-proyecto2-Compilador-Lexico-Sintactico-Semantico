@@ -1,0 +1,6 @@
+println("Hola mundo este archivo es de funciones");
+
+funcion1 (int a, int b, string c):void{
+    println("Hola yo soy la función 1");
+}
+

@@ -44,7 +44,6 @@ export class Environment{
      * @param valor Valor con el que se actualizara
      */
     public actualizar_variable(nombre: string, valor: any) {
-
         let env: Environment | null = this;
 
         while (env != null) {

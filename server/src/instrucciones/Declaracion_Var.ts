@@ -52,7 +52,7 @@ export class Declaracion_Var extends Instruccion {
             const retorno_Exp = this.value.execute(environment);
             
             if(retorno_Exp.type != this.tipo){ //si se cumple esto es un error semántico.
-                const error = new Excepcion("Error semántico", "declaración inválidad, no se puede declarar  un tipo "+this.tipo+" con un valor "+retorno_Exp.type, this.line, this.column);
+                const error = new Excepcion("Error semántico", "declaración inválida, no se puede declarar  un tipo "+this.tipo+" con un valor "+retorno_Exp.type, this.line, this.column);
                 consola.set_Error(error);
                 return;
             }
@@ -63,8 +63,9 @@ export class Declaracion_Var extends Instruccion {
                 const nombreVarActual = this.lista_nombres[index];
                 const todoBien = environment.guardar_variable(nombreVarActual, retorno_Exp.value, this.tipo, environment.recorridoAmbito, true, this.line, this.column);
                 if(todoBien == false){
-                    const error = new Excepcion("Error semántico", "declaración inválidad, la variable "+nombreVarActual+" declarada ya existe", this.line, this.column);
+                    const error = new Excepcion("Error semántico", "declaración inválida, la variable "+nombreVarActual+" declarada ya existe", this.line, this.column);
                     consola.set_Error(error);
+                    throw new Error("Error variable declarada ya existe");
                 }
             }
         }else{ //si la declaración viene sin una valor de asignación entonces solo se ponen los default.
@@ -73,7 +74,7 @@ export class Declaracion_Var extends Instruccion {
                 const nombreVarActual = this.lista_nombres[index];
                 const todoBien = environment.guardar_variable(nombreVarActual, this.defaultValue(this.tipo), this.tipo, environment.recorridoAmbito, true, this.line, this.column);
                 if(todoBien == false){
-                    const error = new Excepcion("Error semántico", "declaración inválidad, la variable "+nombreVarActual+" declarada ya existe", this.line, this.column);
+                    const error = new Excepcion("Error semántico", "declaración inválida, la variable "+nombreVarActual+" declarada ya existe", this.line, this.column);
                     consola.set_Error(error);
                 }
             }

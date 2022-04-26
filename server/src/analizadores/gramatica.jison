@@ -109,6 +109,7 @@
         const { Declaracion_Var } = require('../instrucciones/Declaracion_Var.ts');
         const { Asignacion } = require('../instrucciones/Asignacion.ts');
         const { Bloque } = require('../instrucciones/Bloque.ts');
+        const { InsFuncion } = require('../instrucciones/InsFuncion.ts');
                 //Sentecias de transición
         const { Break } = require('../instrucciones/sentencias_de_transicion/Break.ts');
         const { Continue } = require('../instrucciones/sentencias_de_transicion/Continue.ts');
@@ -197,22 +198,25 @@ ENTRADA:
 ;
 
 FUNCION: 
-        identificador parentesisAbre parentesisCierra dosPuntos TIPO parentesisAbre parentesisCierra {}
-        |   identificador parentesisAbre parentesisCierra dosPuntos TIPO parentesisAbre INSTRUCCIONES parentesisCierra {}
-        |   identificador parentesisAbre LISTAPARAMETROS parentesisCierra dosPuntos TIPO parentesisAbre parentesisCierra {}
-        |   identificador parentesisAbre LISTAPARAMETROS parentesisCierra dosPuntos TIPO parentesisAbre INSTRUCCIONES parentesisCierra {}
+        identificador parentesisAbre parentesisCierra dosPuntos TIPO BLOQUE {}
+        |   identificador parentesisAbre LISTA_PARAMETROS parentesisCierra dosPuntos TIPO BLOQUE {}
 ;
 
-METODO: 
-        identificador parentesisAbre parentesisCierra dosPuntos void llaveAbre llaveCierra {}
-        |   identificador parentesisAbre LISTAPARAMETROS parentesisCierra dosPuntos void llaveAbre llaveCierra {}
-        |   identificador parentesisAbre parentesisCierra dosPuntos void llaveAbre INSTRUCCIONES llaveCierra {}
-        |   identificador parentesisAbre LISTAPARAMETROS parentesisCierra dosPuntos void llaveAbre INSTRUCCIONES llaveCierra {}
+METODO:
+        identificador parentesisAbre parentesisCierra dosPuntos void BLOQUE { $$ = new InsFuncion($1, $6, new Array(), Tipo.VOID, @1.first_line, @1.first_column); }
+        |   identificador parentesisAbre LISTA_PARAMETROS parentesisCierra dosPuntos void BLOQUE { $$ = new InsFuncion($1, $7, $3, Tipo.VOID, @1.first_line, @1.first_column); }
+        |   identificador parentesisAbre parentesisCierra BLOQUE { $$ = new InsFuncion($1, $4, new Array(), Tipo.VOID, @1.first_line, @1.first_column); }
+        |   identificador parentesisAbre LISTA_PARAMETROS parentesisCierra BLOQUE { $$ = new InsFuncion($1, $5, $3, Tipo.VOID, @1.first_line, @1.first_column); }
+;
+
+LISTA_PARAMETROS:      
+                LISTA_PARAMETROS coma TIPO identificador { $1.push(new Declaracion_Var([$4], null, $3, @1.first_line, @1.first_column)); $$ = $1;}
+                |       TIPO identificador { $$ = [new Declaracion_Var([$2], null, $1, @1.first_line, @1.first_column)]; }
 ;
 
 RUN: 
     run identificador parentesisAbre parentesisCierra puntoYcoma {}
-    |   run identificador parentesisAbre LISTAPARAMETROS parentesisCierra puntoYcoma {}
+    |   run identificador parentesisAbre LISTA_PARAMETROS parentesisCierra puntoYcoma {}
 ;
 
 DECLARACION_VAR: 
