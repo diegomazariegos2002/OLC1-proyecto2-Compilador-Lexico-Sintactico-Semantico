@@ -96,7 +96,7 @@
 [0-9]+					return 'entero'
 
 <<EOF>>               return 'EOF'
-.                     { console.log("Error léxico") }
+.                     { console.log("Error léxico" + yytext + ", en la línea "+yylloc.first_line+", en la columna "+yylloc.first_column); }
 
 /lex //fin analizador léxico
 
@@ -113,6 +113,7 @@
                 //Sentecias de transición
         const { Break } = require('../instrucciones/sentencias_de_transicion/Break.ts');
         const { Continue } = require('../instrucciones/sentencias_de_transicion/Continue.ts');
+        const { Return } = require('../instrucciones/sentencias_de_transicion/Return.ts');
                 //Instrucciones de sentencias de control
         const { If } = require('../instrucciones/sentencias_de_control/If.ts');
         const { Switch } = require('../instrucciones/sentencias_de_control/Switch.ts');
@@ -129,6 +130,7 @@
         const { Literal } = require('../expresiones/Literal.ts');
         const { Identificador } = require('../expresiones/Identificador.ts');
         const { Casteo } = require('../expresiones/Casteo.ts');
+        const { Llamada } = require('../expresiones/Llamada.ts');
                 //expresiones aritméticas
         const { Suma } = require('../expresiones/aritmetica/Suma.ts');
         const { Resta } = require('../expresiones/aritmetica/Resta.ts');
@@ -189,17 +191,20 @@ ENTRADAS:
 ;
 
 ENTRADA:    
-        FUNCION {}
-        |   METODO {}
+        FUNCION { $$ = $1; }
+        |   METODO { $$ = $1; }
         |   RUN {}
-        |   DECLARACION_VAR puntoYcoma {}
+        |   DECLARACION_VAR puntoYcoma { $$ = $1; }
         |   DECLARACION_VECT {}
         |   INSTRUCCION { $$ = $1; }
+        |       error puntoYcoma {
+                        console.log("Error sintáctico en la línea: "+(this._$.first_line)+" en la columna: "+(this._$.first_column));
+                        }
 ;
 
 FUNCION: 
-        identificador parentesisAbre parentesisCierra dosPuntos TIPO BLOQUE {}
-        |   identificador parentesisAbre LISTA_PARAMETROS parentesisCierra dosPuntos TIPO BLOQUE {}
+        identificador parentesisAbre parentesisCierra dosPuntos TIPO BLOQUE { $$ = new InsFuncion($1, $6, new Array(), $5, @1.first_line, @1.first_column); }
+        |   identificador parentesisAbre LISTA_PARAMETROS parentesisCierra dosPuntos TIPO BLOQUE { $$ = new InsFuncion($1, $7, $3, $6, @1.first_line, @1.first_column); }
 ;
 
 METODO:
@@ -222,6 +227,7 @@ RUN:
 DECLARACION_VAR: 
             TIPO LISTA_VARIABLES { $$ = new Declaracion_Var($2, null, $1, @1.first_line, @1.first_column); }
             |   TIPO LISTA_VARIABLES igual EXPRESION { $$ = new Declaracion_Var($2, $4, $1, @1.first_line, @1.first_column); }
+            | error puntoYcoma {console.log("Error sintáctico en la línea: "+(this._$.first_line)+" en la columna: "+(this._$.first_column));}
 ;
 
 LISTA_VARIABLES: 
@@ -236,13 +242,14 @@ DECLARACION_VECT:
 ;
 
 LISTA_VALORES:
-                LISTA_VALORES coma VALOR {}
-                | VALOR {}
+                LISTA_VALORES coma EXPRESION { $1.push($3); $$ = $1; }
+                | EXPRESION { $$ = [$1]; }
 ;
 
 INSTRUCCIONES:
         INSTRUCCIONES INSTRUCCION { $1.push($2); $$ = $1; }
         | INSTRUCCION { $$ = [$1]; }
+        | error puntoYcoma {console.log("Error sintáctico en la línea: "+(this._$.first_line)+" en la columna: "+(this._$.first_column));}
 ;
 
 INSTRUCCION: 
@@ -257,14 +264,11 @@ INSTRUCCION:
         |       ASIGNACION puntoYcoma { $$ = $1; }
         |       INCREMENTO puntoYcoma{ $$ = $1; }
         |       DECREMENTO puntoYcoma{ $$ = $1; }
-        |       LLAMADA {}
+        |       LLAMADA puntoYcoma{ $$ = $1; }
         |       PRINT { $$ = $1; }
         |       PRINTLN { $$ = $1; } 
         |       error puntoYcoma {
-                        console.log("Error sintáctico en la línea: "+(yylineno + 1));
-                        var consola = Consola.getInstance();
-                        const excepcion1 = new Excepcion("Error sintáctico", "El caracter no se esperaba en esta posición.", this._$.first_line, this._$.first_column+1);
-                        consola.set_Error(excepcion1);
+                        console.log("Error sintáctico en la línea: "+(this._$.first_line)+" en la columna: "+(this._$.first_column));
                         }
         |       { $$ = null;}
 ;       
@@ -315,7 +319,9 @@ DEFAULT:
 ASIGNACION: identificador igual EXPRESION { $$ = new Asignacion($1, $3, @1.first_line, @1.first_column); };
 INCREMENTO: identificador incremento { $$ = new Incremento_Ins($1, @1.first_line, @1.first_column); };
 DECREMENTO: identificador decremento { $$ = new Decremento_Ins($1, @1.first_line, @1.first_column); };
-LLAMADA:;
+LLAMADA: identificador parentesisAbre LISTA_VALORES parentesisCierra { $$ = new Llamada($1, $3, @1.first_line, @1.first_column); }
+        |       identificador parentesisAbre parentesisCierra { $$ = new Llamada($1, new Array(), @1.first_line, @1.first_column); }
+;
 PRINT: print parentesisAbre EXPRESION parentesisCierra puntoYcoma { $$ = new Print($3, @1.first_line, @1.first_column); };
 PRINTLN:println parentesisAbre EXPRESION parentesisCierra puntoYcoma { $$ = new Println($3, @1.first_line, @1.first_column); };
 
@@ -341,7 +347,7 @@ EXPRESION:
         |       EXPRESION and EXPRESION { $$ = new And($1, $3, @1.first_line, @1.first_column); }
         |       not EXPRESION { $$ = new Not($2, @1.first_line, @1.first_column); }
         /*LLamada de función que devuelve un valor*/
-        |       identificador parentesisAbre LISTA_VALORES parentesisCierra puntoYcoma {}
+        |       LLAMADA { $$ = $1; }
         /*Casteos*/
         |       parentesisAbre TIPO parentesisCierra EXPRESION { $$ = new Casteo($2, $4, @1.first_line, @1.first_column);} 
         /*Funciones reservadas del lenguaje*/
@@ -364,10 +370,7 @@ EXPRESION:
         |       EXPRESION incremento { $$ = new Incremento_Exp($1, @1.first_line, @1.first_column); }
         |       EXPRESION decremento { $$ = new Decremento_Exp($1, @1.first_line, @1.first_column); }
         |       error puntoYcoma {
-                        console.log("Error sintáctico en la línea: "+(yylineno + 1));
-                        var consola = Consola.getInstance();
-                        const excepcion2 = new Excepcion("Error sintáctico", "El caracter no se esperaba en esta posición.", this._$.first_line, this._$.first_column+1);
-                        consola.set_Error(excepcion2);  
+        console.log("Error sintáctico en la línea: "+(this._$.first_line)+" en la columna: "+(this._$.first_column));
         }
 ;
 
@@ -379,11 +382,9 @@ BLOQUE
 SENTENCIA_TRANSFERENCIA:
                         break puntoYcoma { $$ = new Break(@1.first_line, @1.first_column); } 
                         |       continue puntoYcoma { $$ = new Continue(@1.first_line, @1.first_column); }
-                        |       return EXPRESION puntoYcoma {}
-                        |       return puntoYcoma {}
+                        |       return EXPRESION puntoYcoma { $$ = new Return($2, @1.first_line, @1.first_column); }
+                        |       return puntoYcoma { $$ = new Return(null, @1.first_line, @1.first_column); }
 ;
-
-VALOR: EXPRESION {} ;
 
 TIPO: 
     int { $$ = Tipo.INT;}

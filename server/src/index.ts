@@ -1,4 +1,5 @@
 import { Consola } from "./consola_singleton/Consola";
+import { InsFuncion } from "./instrucciones/InsFuncion";
 import { Environment } from "./simbolo/Environment";
 
 /* Aquí van los imports de mis librerías*/
@@ -22,18 +23,51 @@ var incremental = 0;
 
 app.post('/analizar', function(request:any, response:any){
     
+    
     var entrada = request.body.entrada;
     console.log("Estoy analizando");
     console.log(entrada);
     var consola = Consola.getInstance();
     consola.cleanConsola();
     //realizando el analisis de la entrada.
-    consola.set_Ast("digraph G { \nnode[shape=box];\nnodeInicio[label=\"<\\ INICIO \\>\"];\n\n");
-    const ast = parser.parse(entrada);
+    var ast;
+    try{
+    ast = parser.parse(entrada);
+    }catch(error){
+        console.log("Soy un error "+error)
+        ast = [];
+    }
     const env = new Environment(null, "global"); 
+
+    //primera pasada donde se ejecutan todas las instrucciones de funciones
+    for(const instruccion of ast){
+        try{
+            if(instruccion instanceof InsFuncion){
+                instruccion.execute(env)
+            }
+        }catch(error){
+            console.log("soy un error"+error)
+        }
+    }
+
+
+    //Segunda pasada donde ya se ejecutan todas las instrucciones a excepción de las funciones
+    for(const instruccion of ast){
+        try{
+            if(!(instruccion instanceof InsFuncion)){
+                instruccion.execute(env)
+            }
+        }catch(error){
+            console.log("soy un error"+error)
+        }
+    }
+
+    /**For para armar el ast de las instrucciones */
+    consola.set_Ast("digraph G { \nnode[shape=box];\nnodeInicio[label=\"<\\ INICIO \\>\"];\n\n");
     var cont = 0;
     var inst_line_anterior = 0;
     var inst_col_anterior = 0;
+
     for(const instruccion of ast){
         try{
             if(cont == 0){
@@ -45,8 +79,7 @@ app.post('/analizar', function(request:any, response:any){
                 inst_line_anterior = instruccion.line;
                 inst_col_anterior = instruccion.column;
             }
-            
-            instruccion.execute(env)
+
             instruccion.ast()
 
         }catch(error){

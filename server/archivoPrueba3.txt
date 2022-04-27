@@ -1,6 +1,17 @@
-println("Hola mundo este archivo es de funciones");
+println("Hola mundo este archivo es de funciones");te amo
+
+funcion1(1,2,"Hola");
+int a = funcion2(2);
 
 funcion1 (int a, int b, string c):void{
     println("Hola yo soy la función 1");
+    return;
 }
+
+funcion2(int a):int{
+    int c = a + 10;
+    return c;
+}
+
+
 

@@ -2,9 +2,12 @@ import { Expresion } from "../abstracto/Expresion"
 import { Retorno, Tipo } from "../abstracto/Retorno"
 import { Consola } from "../consola_singleton/Consola"
 import { Excepcion } from "../errores/Excepcion"
+import { Declaracion_Var } from "../instrucciones/Declaracion_Var"
+import { InsFuncion } from "../instrucciones/InsFuncion"
 import { Environment } from "../simbolo/Environment"
+import { Asignacion } from "../instrucciones/Asignacion"
 
-export class Call extends Expresion {
+export class Llamada extends Expresion {
 
     constructor(
         private nombre: string,
@@ -17,7 +20,7 @@ export class Call extends Expresion {
 
     public execute(env: Environment) {
         var consola = Consola.getInstance(); //instancia de la consola por posibles errores
-        const funcion_Buscada = env.get_variable(this.nombre)
+        const funcion_Buscada = <InsFuncion>(env.get_variable(this.nombre)?.valor)
         var retorno: Retorno = {value: null, type: Tipo.VOID}
 
         if (funcion_Buscada == null || funcion_Buscada == undefined){
@@ -28,19 +31,31 @@ export class Call extends Expresion {
         }
 
         //verificar que el numero de parametros ingresados sea el mismo numero de parametros en la funcion almacenada
-        if (this.expresiones.length != funcion_Buscada.valor.parametros.length){
+        if (this.expresiones.length != funcion_Buscada.parametros.length){
             const error = new Excepcion("Error semántico", `el número de parámetros en la llamada no coincide con los existentes en la función '${this.nombre}'`, this.line, this.column);
             consola.set_Error(error);
             retorno = {value: null, type: Tipo.ERROR}
             return retorno
         }
 
-        //ejecuto cada uno de las expresiones que vienen como parametros y los almaceno los tipos en un array
-        let array: number[] = []
-        this.expresiones.forEach(x => {
-            const expre = x.execute(env)
-            array.push(expre.type)
-        })
+        //ejecuto cada uno de las expresiones que vienen como parametros y actualizo los valores
+        //de mis parametros si alguno no llegase a coincidir entonces salta un error y ya no se ejecuta 
+        //la instrucción de llamada.
+        var cont = 0;
+        this.expresiones.forEach(element => {
+            var parametro: Declaracion_Var = funcion_Buscada.parametros[cont];
+            var nombreParametro: string = "";
+            parametro.lista_nombres.forEach(elementPara => {
+                nombreParametro = elementPara;
+            });
+            const actualizacion_Parametro: Asignacion = new Asignacion(nombreParametro, element, 0, 0);
+            actualizacion_Parametro.execute(funcion_Buscada.ambienteFuncion);
+            cont++;
+        });
+
+        funcion_Buscada.bloque?.execute(funcion_Buscada.ambienteFuncion);
+        retorno = funcion_Buscada.bloque?.valor_Return;
+        
 
         return retorno;
     }
