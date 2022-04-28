@@ -52,7 +52,7 @@ export class Declaracion_Var extends Instruccion {
             const retorno_Exp = this.value.execute(environment);
             
             if(retorno_Exp.type != this.tipo){ //si se cumple esto es un error semántico.
-                const error = new Excepcion("Error semántico", "declaración inválida, no se puede declarar  un tipo "+this.tipo+" con un valor "+retorno_Exp.type, this.line, this.column);
+                const error = new Excepcion("Error semántico", "declaración inválida, no se puede declarar  un tipo "+consola.getTipo(this.tipo)+" con un valor "+consola.getTipo(retorno_Exp.type), this.line, this.column);
                 consola.set_Error(error);
                 return;
             }
@@ -85,7 +85,7 @@ export class Declaracion_Var extends Instruccion {
         const consola = Consola.getInstance();
         const nombreNodo = `instruccion_${this.line}_${this.column}_`
         consola.set_Ast(`${nombreNodo}[label="\\<Instruccion\\>\\nDeclaracion"];\n`)
-        consola.set_Ast(`${nombreNodo}1[label="\\<Tipo\\>\\n${this.tipo}"];\n`)
+        consola.set_Ast(`${nombreNodo}1[label="\\<Tipo\\>\\n${consola.getTipo(this.tipo)}"];\n`)
         consola.set_Ast(`${nombreNodo}2[label="\\<Nombre\\>\\n${this.lista_nombres}"];\n`)
         consola.set_Ast(`${nombreNodo}->${nombreNodo}1;\n`)
         consola.set_Ast(`${nombreNodo}->${nombreNodo}2;\n`)

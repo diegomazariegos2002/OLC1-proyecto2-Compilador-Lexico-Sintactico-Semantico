@@ -1,3 +1,4 @@
+import { Tipo } from "../abstracto/Retorno";
 import { Excepcion } from "../errores/Excepcion";
 import { Simbolo } from "../simbolo/Simbolo";
 
@@ -61,5 +62,26 @@ export class Consola {
 
     public get_Simbolos() : Simbolo[] {
         return this.simbolos;
+    }
+
+    public getTipo(tipo: Tipo | undefined): string{
+        switch(tipo){
+            case Tipo.INT:
+                return "int";
+            case Tipo.DOUBLE:
+                return "double";
+            case Tipo.CHAR:
+                return "char";
+            case Tipo.STRING:
+                return "string";
+            case Tipo.BOOLEAN:
+                return "boolean";
+            case Tipo.VOID:
+                return "void";
+            case Tipo.VECTOR:
+                return "vector";
+            default:
+                return "error";
+        }
     }
 }

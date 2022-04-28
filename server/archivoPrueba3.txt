@@ -1,17 +1,54 @@
-println("Hola mundo este archivo es de funciones");te amo
+println("Hola mundo este archivo es de funciones");
 
-funcion1(1,2,"Hola");
-int a = funcion2(2);
+funcion_Origen(1,2,"Hola");
+int funcionIf1 = funcion_If(8);
+int funcionIf2 = funcion_If(4);
+double funcionSw1 = funcion_Switch(1);
 
-funcion1 (int a, int b, string c):void{
+funcion_Origen(int a, int b, string c):void{
     println("Hola yo soy la función 1");
     return;
+    println("Yo no me debería de imprimir");
 }
 
-funcion2(int a):int{
-    int c = a + 10;
-    return c;
+funcion_If(int a):int{
+    int c = a + 1;
+    if( c > 5){
+        if(a == 8){
+            println("la variable c es mayor a 5 -> a: " + a);    
+            return a;
+        }else{
+            println("No debería de ejecutarme ->" + c);
+            return c;
+        }
+    }else if(c == 5){
+        println("la variable c es 5 ->" + c);
+        return c;
+    }else if(a == 4){
+        println("no debería de ejecutarme");
+    }else{
+        println("la variable c es menor a 5 ->" + c);
+        return c;
+    }
 }
 
-
-
+funcion_Switch(int a): double{
+    switch(a){
+    case 1:
+        println("No debería de ejecutarme switch");
+        return a;
+        break;
+    case 2:
+        println("funciono bien");
+        return a+1;
+    case 3:
+        println("funciono bien sin el break del case de arriba");
+        string e = "prueba switch";
+        return a+2;
+        break;
+    default:
+        println("Funciono el default");
+        return a+3;
+        break;
+    }
+}

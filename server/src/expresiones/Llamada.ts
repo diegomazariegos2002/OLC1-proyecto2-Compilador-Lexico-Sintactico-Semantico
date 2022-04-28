@@ -53,6 +53,7 @@ export class Llamada extends Expresion {
             cont++;
         });
 
+        funcion_Buscada.bloque!.recorridoAmbito = funcion_Buscada.ambienteFuncion.recorridoAmbito;
         funcion_Buscada.bloque?.execute(funcion_Buscada.ambienteFuncion);
         retorno = funcion_Buscada.bloque?.valor_Return;
         

@@ -34,7 +34,7 @@ export class Asignacion extends Instruccion {
             todoCorrecto = false;
         } 
         if (variable?.tipo != expresion.type) {
-            const error = new Excepcion("Error semántico", `Asignacion incorrecta, la variable con nombre '${this.nombre}' es de tipo [${variable?.tipo}] y se le esta tratando de asignar un tipo [${expresion.type}]`, this.line, this.column);
+            const error = new Excepcion("Error semántico", `Asignacion incorrecta, la variable con nombre '${this.nombre}' es de tipo [${consola.getTipo(variable?.tipo)}] y se le esta tratando de asignar un tipo [${consola.getTipo(expresion.type)}]`, this.line, this.column);
             consola.set_Error(error);
             todoCorrecto = false;
             throw new Error("Los tipos no coinciden en la asiganción de valores de la variable");

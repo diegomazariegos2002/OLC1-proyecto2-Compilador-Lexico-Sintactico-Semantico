@@ -40,7 +40,7 @@ export class Bloque extends Instruccion {
                 console.log("se encontro return")
                 this.return_Encontrado = true;
                 //Se ejecuta la expresión que trae el Return.
-                const exec_Return = (<Return>instruccion).expresion?.execute(env);
+                const exec_Return = (<Return>instruccion).expresion?.execute(newEnv);
                 if(exec_Return != null && exec_Return != undefined){ //Si el return si venía con una expresión
                     this.valor_Return = exec_Return; //se actualiza el retorno de mi bloque
                 }
@@ -72,7 +72,7 @@ export class Bloque extends Instruccion {
                     break;
                 } 
             }
-            /**Los siguientes If son para validar los continue dentro de if's*/
+            /**Los siguientes If son para validar los {continue} dentro de if's*/
             if(instruccion instanceof If == true){
                 if((<If>instruccion).bloque.continue_Encontrado == true || (<If>instruccion).else_ElseIf?.continue_Encontrado == true){
                     (<If>instruccion).bloque.continue_Encontrado = false;
@@ -83,6 +83,30 @@ export class Bloque extends Instruccion {
                     break;
                 } 
             }
+            /**Los siguientes If son para validar los {return} dentro de if's*/
+            if(instruccion instanceof If == true){
+                if((<If>instruccion).bloque.return_Encontrado == true){
+                    (<If>instruccion).bloque.return_Encontrado = false;
+                    
+                    this.return_Encontrado = true;
+                    this.valor_Return = (<If>instruccion).bloque.valor_Return;
+                    (<If>instruccion).bloque.valor_Return = {value: null, type: Tipo.VOID};
+                    break;
+
+                }else if((<If>instruccion).return_Encontrado == true){
+                    if((<If>instruccion).else_ElseIf != null){
+                        (<If>instruccion).return_Encontrado = false;
+                        this.valor_Return = (<If>instruccion).valor_Return;
+                        (<If>instruccion).valor_Return = {value: null, type: Tipo.VOID};
+                    }
+                    
+                    this.return_Encontrado = true;
+                    break;
+                }
+            }
+
+            
+
         }
 
     }
