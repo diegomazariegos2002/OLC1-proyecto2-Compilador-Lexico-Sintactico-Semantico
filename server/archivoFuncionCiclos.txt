@@ -3,13 +3,14 @@ double funcionWhile = funcion_While(1.0);
 double funcionFor = funcion_For(1);
 println("{"+funcionFor+"}");
 
+run funcion_DoWhile(1.0);
+
 funcion_DoWhile(double a): double{
     do{
         println("Do While");
         if( a == 3){
             return a;
         }
-        double funcionFor = funcion_For(1);
         a++;
     }while(a < 10);
 }
@@ -20,6 +21,7 @@ funcion_While(double a): double{
         if(a == 2){
             return a;
         }
+        double funcionFor = funcion_For(1);
         a++;
     }
 }

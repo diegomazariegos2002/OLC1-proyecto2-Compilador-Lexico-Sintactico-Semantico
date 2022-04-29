@@ -110,6 +110,7 @@
         const { Asignacion } = require('../instrucciones/Asignacion.ts');
         const { Bloque } = require('../instrucciones/Bloque.ts');
         const { InsFuncion } = require('../instrucciones/InsFuncion.ts');
+        const { Run } = require('../instrucciones/Run.ts');
                 //Sentecias de transición
         const { Break } = require('../instrucciones/sentencias_de_transicion/Break.ts');
         const { Continue } = require('../instrucciones/sentencias_de_transicion/Continue.ts');
@@ -220,8 +221,7 @@ LISTA_PARAMETROS:
 ;
 
 RUN: 
-    run identificador parentesisAbre parentesisCierra puntoYcoma {}
-    |   run identificador parentesisAbre LISTA_PARAMETROS parentesisCierra puntoYcoma {}
+    run LLAMADA puntoYcoma { $$ = new Run($2, @1.first_line, @1.first_column); }
 ;
 
 DECLARACION_VAR: 
