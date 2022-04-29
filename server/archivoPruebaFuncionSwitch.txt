@@ -1,0 +1,25 @@
+double funcionSw1 = funcion_Switch(1);
+println("{"+funcionSw1+"}");
+
+
+funcion_Switch(int a): double{
+    switch(a){
+    case 1:
+        println("No debería de ejecutarme switch");
+        return (double)(a);
+        break;
+    case 2:
+        println("funciono bien");
+        return (double)(a+1);
+    case 3:
+        println("funciono bien sin el break del case de arriba");
+        string e = "prueba switch";
+        return (double)(a+2);
+        break;
+    default:
+        println("Funciono el default");
+        return (double)(a+3);
+        break;
+    }
+}
+

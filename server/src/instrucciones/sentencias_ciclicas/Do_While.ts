@@ -8,6 +8,9 @@ import { Bloque } from "../Bloque";
 
 export class Do_While extends Instruccion {
 
+    public return_Encontrado: boolean = false;
+    public valor_Return: Retorno = { value: null, type: Tipo.VOID };
+
     constructor(
         public bloque: Bloque,
         private condition: Expresion,
@@ -27,22 +30,28 @@ export class Do_While extends Instruccion {
             return;
         }
 
-        if(this.bloque != null && this.bloque != undefined){
-            this.bloque.recorridoAmbito = env.recorridoAmbito+" -> Cuerpo while";
-            this.bloque.execute(env)   
-        }
-
-        while (exec_Condicion.value == true && this.bloque?.break_Encontrado == false) {
-            
-            if(this.bloque != null && this.bloque != undefined){
-                this.bloque.recorridoAmbito = env.recorridoAmbito+" -> Cuerpo while";
-                this.bloque.execute(env)   
+        //Es ironico pero el Do-While se hace más fácil con un Do-While
+        do {
+            if (this.bloque != null && this.bloque != undefined) {
+                this.bloque.recorridoAmbito = env.recorridoAmbito + " -> Cuerpo while";
+                this.bloque.execute(env)
             }
 
-            exec_Condicion = this.condition.execute(env)
-        }
+            /**Validaciones del {return} en el Do-While  */
+            if (this.bloque.return_Encontrado == true) {
+                if (this.bloque.return_Encontrado == true) {
+                    this.bloque.return_Encontrado = false;
 
-        if(this.bloque != null || this.bloque != undefined) this.bloque.break_Encontrado = false;
+                    this.return_Encontrado = true;
+                    this.valor_Return = this.bloque.valor_Return;
+                    this.bloque.valor_Return = { value: null, type: Tipo.VOID };
+                    break;
+                }
+            }
+            exec_Condicion = this.condition.execute(env)
+        } while (exec_Condicion.value == true && this.bloque?.break_Encontrado == false);
+
+        if (this.bloque != null || this.bloque != undefined) this.bloque.break_Encontrado = false;
     }
 
     public ast() {

@@ -8,6 +8,9 @@ import { Bloque } from "../Bloque";
 
 export class While extends Instruccion {
 
+    public return_Encontrado: boolean = false;
+    public valor_Return: Retorno = { value: null, type: Tipo.VOID };
+
     constructor(
         private condition: Expresion,
         public bloque: Bloque,
@@ -32,6 +35,18 @@ export class While extends Instruccion {
             if(this.bloque != null && this.bloque != undefined){
                 this.bloque.recorridoAmbito = env.recorridoAmbito+" -> Cuerpo while";
                 this.bloque.execute(env)   
+            }
+
+            /**Validaciones del {return} en el While  */
+            if (this.bloque.return_Encontrado == true) {
+                if (this.bloque.return_Encontrado == true) {
+                    this.bloque.return_Encontrado = false;
+
+                    this.return_Encontrado = true;
+                    this.valor_Return = this.bloque.valor_Return;
+                    this.bloque.valor_Return = { value: null, type: Tipo.VOID };
+                    break;
+                }
             }
 
             exec_Condicion = this.condition.execute(env)

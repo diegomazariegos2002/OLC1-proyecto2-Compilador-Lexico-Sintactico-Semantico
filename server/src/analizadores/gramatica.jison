@@ -360,8 +360,8 @@ EXPRESION:
         |       toCharArray parentesisAbre EXPRESION parentesisCierra {}
         /*Valores que pueden estar en las expresiones*/
         |       cadena { $$ = new Literal($1, Tipo.STRING, @1.first_line, @1.first_column); }
-        |       entero { $$ = new Literal($1, Tipo.INT, @1.first_line, @1.first_column); }
-        |       decimal { $$ = new Literal($1, Tipo.DOUBLE, @1.first_line, @1.first_column); }
+        |       entero { $$ = new Literal(parseInt($1), Tipo.INT, @1.first_line, @1.first_column); }
+        |       decimal { $$ = new Literal(Number($1), Tipo.DOUBLE, @1.first_line, @1.first_column); }
         |       caracter { $$ = new Literal($1, Tipo.CHAR, @1.first_line, @1.first_column); }
         |       true { $$ = new Literal($1, Tipo.BOOLEAN, @1.first_line, @1.first_column); }
         |       false { $$ = new Literal($1, Tipo.BOOLEAN, @1.first_line, @1.first_column); }

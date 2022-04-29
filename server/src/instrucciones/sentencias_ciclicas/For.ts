@@ -8,6 +8,9 @@ import { Bloque } from "../Bloque";
 
 export class For extends Instruccion {
 
+    public return_Encontrado: boolean = false;
+    public valor_Return: Retorno = { value: null, type: Tipo.VOID };
+
     constructor(
         private declaracion: Expresion | Instruccion,
         private condition: Expresion,
@@ -44,12 +47,24 @@ export class For extends Instruccion {
         }
 
         while (exec_Condicion.value == true && this.bloque?.break_Encontrado == false) {
-            
-            if(this.bloque != null && this.bloque != undefined ){
-                this.bloque.recorridoAmbito = newEnv.recorridoAmbito+" -> Cuerpo for";
-                this.bloque.execute(newEnv)   
+
+            if (this.bloque != null && this.bloque != undefined) {
+                this.bloque.recorridoAmbito = newEnv.recorridoAmbito + " -> Cuerpo for";
+                this.bloque.execute(newEnv)
             }
-            
+
+            /**Validaciones del {return} en el for  */
+            if (this.bloque.return_Encontrado == true) {
+                if (this.bloque.return_Encontrado == true) {
+                    this.bloque.return_Encontrado = false;
+
+                    this.return_Encontrado = true;
+                    this.valor_Return = this.bloque.valor_Return;
+                    this.bloque.valor_Return = { value: null, type: Tipo.VOID };
+                    break;
+                }
+            }
+
             //Ejecutar la iteración
             if (this.iteracion instanceof Expresion) {
                 retorno_Iter = this.iteracion.execute(newEnv);
@@ -65,7 +80,7 @@ export class For extends Instruccion {
             exec_Condicion = this.condition.execute(newEnv)
         }
 
-        if(this.bloque != null || this.bloque != undefined) this.bloque.break_Encontrado = false;
+        if (this.bloque != null || this.bloque != undefined) this.bloque.break_Encontrado = false;
     }
 
     public ast() {
@@ -84,11 +99,11 @@ export class For extends Instruccion {
         ${name_node}Ambito->${name_node}3;
         ${name_node}Ambito->${name_node}4;
         `)
-        
+
         //Unión a la parte declaración
-        if(this.declaracion instanceof Expresion){
+        if (this.declaracion instanceof Expresion) {
             consola.set_Ast(`${name_node}1->${this.declaracion.ast()}`);
-        }else{
+        } else {
             consola.set_Ast(`${name_node}1->instruccion_${this.declaracion.line}_${this.declaracion.column}_;`);
             this.declaracion.ast();
         }
@@ -99,10 +114,10 @@ export class For extends Instruccion {
         `)
 
         //Unión a la parte iterativa
-        if(this.iteracion instanceof Expresion){
+        if (this.iteracion instanceof Expresion) {
             consola.set_Ast(`${name_node}3->${this.iteracion.ast()}
             `);
-        }else{
+        } else {
             consola.set_Ast(`${name_node}3->instruccion_${this.iteracion.line}_${this.iteracion.column}_;
             `);
             this.iteracion.ast()

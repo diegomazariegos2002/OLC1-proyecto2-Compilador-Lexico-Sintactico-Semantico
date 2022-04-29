@@ -278,10 +278,10 @@ case 106:
  this.$ = new Literal($$[$0], Tipo.STRING, _$[$0].first_line, _$[$0].first_column); 
 break;
 case 107:
- this.$ = new Literal($$[$0], Tipo.INT, _$[$0].first_line, _$[$0].first_column); 
+ this.$ = new Literal(parseInt($$[$0]), Tipo.INT, _$[$0].first_line, _$[$0].first_column); 
 break;
 case 108:
- this.$ = new Literal($$[$0], Tipo.DOUBLE, _$[$0].first_line, _$[$0].first_column); 
+ this.$ = new Literal(Number($$[$0]), Tipo.DOUBLE, _$[$0].first_line, _$[$0].first_column); 
 break;
 case 109:
  this.$ = new Literal($$[$0], Tipo.CHAR, _$[$0].first_line, _$[$0].first_column); 
@@ -486,7 +486,6 @@ _handle_error:
             // just recovered from another error
             if (recovering == 3) {
                 if (symbol === EOF || preErrorSymbol === EOF) {
-                    console.log("Error sintáctico en el token: "+(this.terminals_[symbol] || symbol)+", en la línea: "+lexer.yylineno+", se esperaba: "+expected)
                     throw new Error(errStr || 'Parsing halted while starting to recover from another error.');
                 }
 

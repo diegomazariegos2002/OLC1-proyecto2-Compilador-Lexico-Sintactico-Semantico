@@ -2,7 +2,11 @@ import { Instruccion } from "../abstracto/Instruccion"
 import { Retorno, Tipo } from "../abstracto/Retorno";
 import { Consola } from "../consola_singleton/Consola"
 import { Environment } from "../simbolo/Environment"
+import { Do_While } from "./sentencias_ciclicas/Do_While";
+import { For } from "./sentencias_ciclicas/For";
+import { While } from "./sentencias_ciclicas/While";
 import { If } from "./sentencias_de_control/If";
+import { Switch } from "./sentencias_de_control/Switch";
 import { Break } from "./sentencias_de_transicion/Break";
 import { Continue } from "./sentencias_de_transicion/Continue";
 import { Return } from "./sentencias_de_transicion/Return";
@@ -18,7 +22,7 @@ export class Bloque extends Instruccion {
     public break_Encontrado: boolean = false;
     public continue_Encontrado: boolean = false;
     public return_Encontrado: boolean = false;
-    public valor_Return: Retorno = {value: null, type: Tipo.VOID};
+    public valor_Return: Retorno = { value: null, type: Tipo.VOID };
 
     constructor(
         private instrucciones: Array<Instruccion>,
@@ -41,19 +45,19 @@ export class Bloque extends Instruccion {
                 this.return_Encontrado = true;
                 //Se ejecuta la expresión que trae el Return.
                 const exec_Return = (<Return>instruccion).expresion?.execute(newEnv);
-                if(exec_Return != null && exec_Return != undefined){ //Si el return si venía con una expresión
+                if (exec_Return != null && exec_Return != undefined) { //Si el return si venía con una expresión
                     this.valor_Return = exec_Return; //se actualiza el retorno de mi bloque
                 }
                 break;
             }
 
-            if(instruccion instanceof Break == true){
+            if (instruccion instanceof Break == true) {
                 console.log("se encontro break")
                 this.break_Encontrado = true;
                 break;
             }
 
-            if(instruccion instanceof Continue == true){
+            if (instruccion instanceof Continue == true) {
                 console.log("se encontro continue")
                 this.continue_Encontrado = true;
                 break;
@@ -62,53 +66,68 @@ export class Bloque extends Instruccion {
             instruccion.execute(newEnv);
 
             /**Los siguientes If son para validar los break dentro de if's*/
-            if(instruccion instanceof If == true){
-                if((<If>instruccion).bloque.break_Encontrado == true || (<If>instruccion).else_ElseIf?.break_Encontrado == true){
+            if (instruccion instanceof If == true) {
+                if ((<If>instruccion).bloque.break_Encontrado == true || (<If>instruccion).else_ElseIf?.break_Encontrado == true) {
                     (<If>instruccion).bloque.break_Encontrado = false;
-                    if((<If>instruccion).else_ElseIf != null){
+                    if ((<If>instruccion).else_ElseIf != null) {
                         (<If>instruccion).else_ElseIf!.break_Encontrado = false;
                     }
                     this.break_Encontrado = true;
                     break;
-                } 
+                }
             }
             /**Los siguientes If son para validar los {continue} dentro de if's*/
-            if(instruccion instanceof If == true){
-                if((<If>instruccion).bloque.continue_Encontrado == true || (<If>instruccion).else_ElseIf?.continue_Encontrado == true){
+            if (instruccion instanceof If == true) {
+                if ((<If>instruccion).bloque.continue_Encontrado == true || (<If>instruccion).else_ElseIf?.continue_Encontrado == true) {
                     (<If>instruccion).bloque.continue_Encontrado = false;
-                    if((<If>instruccion).else_ElseIf != null){
+                    if ((<If>instruccion).else_ElseIf != null) {
                         (<If>instruccion).else_ElseIf!.continue_Encontrado = false;
                     }
                     this.continue_Encontrado = true;
                     break;
-                } 
+                }
             }
             /**Los siguientes If son para validar los {return} dentro de if's*/
-            if(instruccion instanceof If == true){
-                if((<If>instruccion).bloque.return_Encontrado == true){
+            if (instruccion instanceof If == true) {
+                if ((<If>instruccion).return_Encontrado == true) {
+                    (<If>instruccion).return_Encontrado = false;
+
+                    this.return_Encontrado = true;
+                    this.valor_Return = (<If>instruccion).valor_Return;
+                    (<If>instruccion).valor_Return = { value: null, type: Tipo.VOID };
+                    break;
+                } else if ((<If>instruccion).bloque.return_Encontrado == true) {
                     (<If>instruccion).bloque.return_Encontrado = false;
-                    
+
                     this.return_Encontrado = true;
                     this.valor_Return = (<If>instruccion).bloque.valor_Return;
-                    (<If>instruccion).bloque.valor_Return = {value: null, type: Tipo.VOID};
+                    (<If>instruccion).bloque.valor_Return = { value: null, type: Tipo.VOID };
                     break;
 
-                }else if((<If>instruccion).return_Encontrado == true){
-                    if((<If>instruccion).else_ElseIf != null){
+                } else if ((<If>instruccion).return_Encontrado == true) {
+                    if ((<If>instruccion).else_ElseIf != null) {
                         (<If>instruccion).return_Encontrado = false;
                         this.valor_Return = (<If>instruccion).valor_Return;
-                        (<If>instruccion).valor_Return = {value: null, type: Tipo.VOID};
+                        (<If>instruccion).valor_Return = { value: null, type: Tipo.VOID };
                     }
-                    
+
                     this.return_Encontrado = true;
                     break;
                 }
             }
 
-            
+            /**Si el {return} proviene de un switch || For  principalmente*/
+            if (instruccion instanceof Switch || instruccion instanceof For || instruccion instanceof While || instruccion instanceof Do_While) {
+                if ((instruccion).return_Encontrado == true) {
+                    (instruccion).return_Encontrado = false;
 
+                    this.return_Encontrado = true;
+                    this.valor_Return = (instruccion).valor_Return;
+                    (instruccion).valor_Return = { value: null, type: Tipo.VOID };
+                    break;
+                }
+            }
         }
-
     }
 
     public ast() {
@@ -124,7 +143,7 @@ export class Bloque extends Instruccion {
         this.instrucciones.forEach(instruccion => {
             if (cont == 0) {
                 consola.set_Ast(`${name_node}->instruccion_${instruccion.line}_${instruccion.column}_;`)
-            }else{
+            } else {
                 consola.set_Ast(`instruccion_${inst_line_anterior}_${inst_col_anterior}_->instruccion_${instruccion.line}_${instruccion.column}_;`)
             }
             inst_line_anterior = instruccion.line;

@@ -1,0 +1,93 @@
+funcionesEspecialesYNativas(): void{
+    int a = 15;
+    Println("------------------TOLOWER-------------------");
+    Println("SIN TOLOWER");
+    Println(toLower("CON TOLOWER"));
+    Println("------------------TOUPPER-------------------");
+    Println("sin toupper");
+    Println(toUpper("con toupper"));
+    Println("------------------ROUND-------------------");
+    double c=26.5;
+    Println("sin round: "+c);
+    c=round(c);
+    Println("con round "+c);
+    double cc=26.4;
+    Println("sin round: "+cc);
+    cc=round(cc);
+    Println("con round "+cc);
+    Println("-----------------TYPEOF--------------------");
+    string x="soy una cadena";
+    int y = 50;
+    double z = 78.5;
+    char xx = 'a';
+    boolean yy = true;
+    Println("tipo: "+typeof(x));
+    Println("tipo: "+typeof(y));
+    Println("tipo: "+typeof(z));
+    Println("tipo: "+typeof(xx));
+    Println("tipo: "+typeof(yy));
+    Println("------------------LENGTH-------------------");
+    string cadena="soy una cadena";
+    Println("tamaño: "+length(cadena));
+    Println("------------------TOSTRING-------------------");
+    int numero=105;
+    Println("tipo: "+typeof(numero));
+    Println("tipo: "+typeof(toString(numero)));
+    Println("----------------TOCHARARRAY------------------");
+    char[] listaChar = toCharArray("SOY UNA LISTA");
+    Println("########imprimiendo lista de caracteres#######");
+    imprimirListaChar(listaChar);
+}
+
+RUN funcionesEspecialesYNativas();
+
+imprimirListaChar(char[] miLista){
+    for (int i = 0; i < length(miLista); i++) {
+        Println("listaChar[" + i + "] = " + getValue(miLista,i));
+    }
+}
+
+getValue(char[] miLista, int index): char {
+	return miLista[index];
+}
+
+/*
+--------------------SALIDA ESPERADA-----------------
+------------------TOLOWER-------------------
+SIN TOLOWER
+con tolower
+------------------TOUPPER-------------------
+sin toupper
+CON TOUPPER
+------------------ROUND-------------------
+sin round: 26.5
+con round 27
+sin round: 26.4
+con round 26
+-----------------TYPEOF--------------------
+tipo: STRING
+tipo: INT
+tipo: DOUBLE
+tipo: CHAR
+tipo: BOOLEAN
+------------------LENGTH-------------------
+tamaño: 14
+------------------TOSTRING-------------------
+tipo: INT
+tipo: STRING
+----------------TOCHARARRAY------------------
+########imprimiendo lista de caracteres#######
+listaChar[0] = S
+listaChar[1] = O
+listaChar[2] = Y
+listaChar[3] =  
+listaChar[4] = U
+listaChar[5] = N
+listaChar[6] = A
+listaChar[7] =  
+listaChar[8] = L
+listaChar[9] = I
+listaChar[10] = S
+listaChar[11] = T
+listaChar[12] = A
+*/

@@ -8,8 +8,12 @@ import { Bloque } from "../Bloque";
 
 export class If extends Instruccion {
 
+    /**
+     * Estas variables es porque se generan nuevos ambitos con estas funciones y en caso de retornos
+     * tiene que devolver algo.
+     */
     public return_Encontrado: boolean = false;
-    public valor_Return: Retorno = {value: null, type: Tipo.VOID};
+    public valor_Return: Retorno = { value: null, type: Tipo.VOID };
 
     constructor(
         private condition: Expresion,
@@ -39,7 +43,7 @@ export class If extends Instruccion {
                 this.bloque.return_Encontrado = false;
                 this.return_Encontrado = true;
                 this.valor_Return = this.bloque.valor_Return;
-                this.bloque.valor_Return = {value: null, type: Tipo.VOID};
+                this.bloque.valor_Return = { value: null, type: Tipo.VOID };
             }
         } else {
             if (this.else_ElseIf != null) {
@@ -50,7 +54,7 @@ export class If extends Instruccion {
                     this.else_ElseIf!.return_Encontrado = false;
                     this.return_Encontrado = true;
                     this.valor_Return = this.else_ElseIf!.valor_Return;
-                    this.else_ElseIf!.valor_Return = {value: null, type: Tipo.VOID};
+                    this.else_ElseIf!.valor_Return = { value: null, type: Tipo.VOID };
                 }
             }
         }
