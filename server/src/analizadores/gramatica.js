@@ -319,7 +319,9 @@ break;
 case 114:
 
         console.log("Error sintáctico en la línea: "+(this._$.first_line)+" en la columna: "+(this._$.first_column));
-        
+        const error = new Excepcion("Error sintáctico", "Error sintáctico no se esperaba "+(this.terminals_[symbol] || symbol)+" en la línea: "+(this._$.first_line)+" en la columna: "+(this._$.first_column), this._$.first_line, this._$.first_column);
+        consola.set_Error(error);
+        this.$ = "";
 break;
 case 115:
  this.$ = new Bloque($$[$0-1], _$[$0-2].first_line, _$[$0-2].first_column); 
@@ -504,7 +506,10 @@ _handle_error:
             // just recovered from another error
             if (recovering == 3) {
                 if (symbol === EOF || preErrorSymbol === EOF) {
-                    throw new Error(errStr || 'Parsing halted while starting to recover from another error.');
+                    console.log("Error sintáctico no se esperaba "+(lexer.match)+" en la línea: "+(yylineno+1)+" en la columna: "+(yyloc.first_column)); 
+                    const error = new Excepcion("Error sintáctico", "Error sintáctico no se esperaba "+(this.terminals_[symbol] || symbol)+" en la línea: "+(yylineno)+" en la columna: "+(yyleng), yylineno, yyleng);
+                    consola.set_Error(error);
+                    return []
                 }
 
                 // discard current lookahead and grab another
@@ -1153,7 +1158,11 @@ case 74:return 87
 break;
 case 75:return 5
 break;
-case 76: console.log("Error léxico" + yy_.yytext + ", en la línea "+yy_.yylloc.first_line+", en la columna "+yy_.yylloc.first_column); 
+case 76: 
+console.log("Error léxico" + yy_.yytext + ", en la línea "+yy_.yylloc.first_line+", en la columna "+yy_.yylloc.first_column); 
+const error = new Excepcion("Error léxico", `no se reconoce '${yy_.yytext}' en el lenguaje`, yy_.yylloc.first_line, yy_.yylloc.first_column);
+consola.set_Error(error);
+return 'invalid'
 break;
 }
 },

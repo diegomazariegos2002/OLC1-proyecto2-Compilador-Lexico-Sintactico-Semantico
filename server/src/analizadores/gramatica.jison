@@ -98,6 +98,14 @@
 <<EOF>>               return 'EOF'
 .                     { console.log("Error léxico" + yytext + ", en la línea "+yylloc.first_line+", en la columna "+yylloc.first_column); }
 
+/**
+ * Agregar en la parte de error léxico lo siguiente:
+console.log("Error léxico" + yy_.yytext + ", en la línea "+yy_.yylloc.first_line+", en la columna "+yy_.yylloc.first_column); 
+const error = new Excepcion("Error léxico", `no se reconoce '${yy_.yytext}' en el lenguaje`, yy_.yylloc.first_line, yy_.yylloc.first_column);
+consola.set_Error(error);
+return 'invalid'
+*/
+
 /lex //fin analizador léxico
 
 /* Comienzo analizador sintáctico */
@@ -206,6 +214,13 @@ ENTRADA:
         |   INSTRUCCION { $$ = $1; }
         |       error puntoYcoma {
                         console.log("Error sintáctico en la línea: "+(this._$.first_line)+" en la columna: "+(this._$.first_column));
+                        /**
+                        * Pegar en el error de la gramatica.js
+                        console.log("Error sintáctico no se esperaba "+(yyloc.match)+" en la línea: "+(yylineno+1)+" en la columna: "+(yyloc.first_column)); 
+                        const error = new Excepcion("Error sintáctico", "Error sintáctico no se esperaba "+(this.terminals_[symbol] || symbol)+" en la línea: "+(yylineno)+" en la columna: "+(yyleng), yylineno, yyleng);
+                        consola.set_Error(error);
+                        return [];
+                        */
                         }
 ;
 
