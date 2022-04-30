@@ -194,7 +194,7 @@ ENTRADAS:
 ENTRADA:    
         FUNCION { $$ = $1; }
         |   METODO { $$ = $1; }
-        |   RUN {}
+        |   RUN { $$ = $1; }
         |   DECLARACION_VAR puntoYcoma { $$ = $1; }
         |   DECLARACION_VECT {}
         |   INSTRUCCION { $$ = $1; }

@@ -3,7 +3,7 @@ double funcionWhile = funcion_While(1.0);
 double funcionFor = funcion_For(1);
 println("{"+funcionFor+"}");
 
-run funcion_DoWhile(1.0);
+run funcion_While(1.0);
 
 funcion_DoWhile(double a): double{
     do{

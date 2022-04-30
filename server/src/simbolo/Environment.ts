@@ -1,6 +1,7 @@
 import { Simbolo } from "./Simbolo";
 import { Tipo } from "../abstracto/Retorno"; 
 import { Consola } from "../consola_singleton/Consola";
+import { InsFuncion } from "../instrucciones/InsFuncion";
 
 export class Environment{
     /**Mapa de variables */
@@ -97,6 +98,34 @@ export class Environment{
 
         //no encontro el nombre , osea que esta disponible para usar
         return false
+    }
+
+    /**
+     * Método para obtener todas las funciones que tenga un ambiente
+     * y sus ambientes anteriores.
+     * @returns 
+     */
+    public obtenerTodasLasFunciones(): InsFuncion[]{
+        //lista que se retorna
+        var listaFuncionesEncontrada: InsFuncion[] = []
+
+        //revisar en las variables almacenadas
+        var environmentActual: Environment | null = this.anterior;
+
+        for (let entry of Array.from(this.variables.entries())) {
+            if (entry[1].valor instanceof InsFuncion) listaFuncionesEncontrada.push(entry[1].valor);
+        }
+
+        while(environmentActual != null){ //verificar si no existe la variable en el resto de ámbitos atrás.
+
+            for (let entry of Array.from(environmentActual.variables.entries())) {
+                if (entry[1].valor instanceof InsFuncion) listaFuncionesEncontrada.push(entry[1].valor);
+            }
+
+            environmentActual = environmentActual.anterior;
+        }
+
+        return listaFuncionesEncontrada;
     }
 
     public getTipo(tipo: Tipo): string{

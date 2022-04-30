@@ -21,20 +21,20 @@ export class Llamada extends Expresion {
     public execute(env: Environment) {
         var consola = Consola.getInstance(); //instancia de la consola por posibles errores
         const funcion_Buscada = <InsFuncion>(env.get_variable(this.nombre)?.valor)
-        var retorno: Retorno = {value: null, type: Tipo.VOID}
+        var retorno: Retorno = { value: null, type: Tipo.VOID }
 
-        if (funcion_Buscada == null || funcion_Buscada == undefined){
+        if (funcion_Buscada == null || funcion_Buscada == undefined) {
             const error = new Excepcion("Error semántico", `no existe una función con este nombre '${this.nombre}'`, this.line, this.column);
             consola.set_Error(error);
-            retorno = {value: null, type: Tipo.ERROR}
+            retorno = { value: null, type: Tipo.ERROR }
             return retorno
         }
 
         //verificar que el numero de parametros ingresados sea el mismo numero de parametros en la funcion almacenada
-        if (this.expresiones.length != funcion_Buscada.parametros.length){
+        if (this.expresiones.length != funcion_Buscada.parametros.length) {
             const error = new Excepcion("Error semántico", `el número de parámetros en la llamada no coincide con los existentes en la función '${this.nombre}'`, this.line, this.column);
             consola.set_Error(error);
-            retorno = {value: null, type: Tipo.ERROR}
+            retorno = { value: null, type: Tipo.ERROR }
             return retorno
         }
 
@@ -53,10 +53,16 @@ export class Llamada extends Expresion {
             cont++;
         });
 
+        //le mando el recorrido del ambito al bloque de la función llamada.
         funcion_Buscada.bloque!.recorridoAmbito = funcion_Buscada.ambienteFuncion.recorridoAmbito;
+        //se añaden al ambito de la función las funciones encontradas en el ambito global y anteriores.
+        //Esto para poder realizar la recursividad y todas esas cosas.
+        env.obtenerTodasLasFunciones().forEach(element => {
+            funcion_Buscada.ambienteFuncion.guardar_variable(element.name, element, element.tipo, element.recorridoFuncion, false, element.line, element.column);
+        });
+
         funcion_Buscada.bloque?.execute(funcion_Buscada.ambienteFuncion);
         retorno = funcion_Buscada.bloque?.valor_Return;
-        
 
         return retorno;
     }

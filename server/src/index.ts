@@ -1,4 +1,5 @@
 import { Consola } from "./consola_singleton/Consola";
+import { Declaracion_Var } from "./instrucciones/Declaracion_Var";
 import { InsFuncion } from "./instrucciones/InsFuncion";
 import { Run } from "./instrucciones/Run";
 import { Environment } from "./simbolo/Environment";
@@ -43,7 +44,7 @@ app.post('/analizar', function (request: any, response: any) {
     //primera pasada donde se ejecutan todas las instrucciones de funciones
     for (const instruccion of ast) {
         try {
-            if (instruccion instanceof InsFuncion) {
+            if (instruccion instanceof InsFuncion || instruccion instanceof Declaracion_Var) {
                 instruccion.execute(env)
             }
         } catch (error) {

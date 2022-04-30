@@ -26,7 +26,7 @@ export class Return extends Instruccion {
         //Si me ejecuto quiere decir que soy un error porque el break no se tiene que ejecutar solo es una clase bandera.
         const name_node = `instruccion_${this.line}_${this.column}_`
         consola.set_Ast(`
-        ${name_node}[label="\\<Instrucción\\>\\nBreak"];        
+        ${name_node}[label="\\<Instrucción\\>\\nReturn"];        
         `)
     }
 }

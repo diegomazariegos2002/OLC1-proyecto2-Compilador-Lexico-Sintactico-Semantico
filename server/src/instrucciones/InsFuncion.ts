@@ -10,7 +10,7 @@ import { Declaracion_Var } from "./Declaracion_Var";
 export class InsFuncion extends Instruccion {
 
     public ambienteFuncion: Environment= new Environment(null,""); //solo para declarar nomás.
-
+    public recorridoFuncion: string = "";
     constructor(
         public name: string,
         public bloque: Bloque,
@@ -25,7 +25,8 @@ export class InsFuncion extends Instruccion {
     public execute(env: Environment) {
         const consola = Consola.getInstance()
         let c = env.revisarRepetido(this.name)
-        this.ambienteFuncion = new Environment(null, "global -> "+this.name);
+        this.recorridoFuncion = env.recorridoAmbito;
+        this.ambienteFuncion = new Environment(env, "global -> "+this.name);
 
         if (c){
             const error = new Excepcion("Error semántico", "declaración de función inválida, ya se ha declarado antes el nombre "+this.name, this.line, this.column);
@@ -37,6 +38,7 @@ export class InsFuncion extends Instruccion {
         this.parametros.forEach(element => {
             element.execute(this.ambienteFuncion)
         });
+        
 
         //todo esta listo para guardar la función en la tabla de simbolos
         env.guardar_variable(this.name, this, this.tipo, env.recorridoAmbito, false, this.line, this.column);
