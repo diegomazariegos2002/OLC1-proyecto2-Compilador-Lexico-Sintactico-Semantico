@@ -49,6 +49,9 @@ export class InsFuncion extends Instruccion {
         const name_node = `instruccion_${this.line}_${this.column}_`
         consola.set_Ast(`
         ${name_node}[label="\\<Instruccion\\>\\nDeclaración de función"];
-        `)
+        ${name_node}1[label="\\<Bloque Función\\>"];
+        ${name_node}->${name_node}1;
+        ${name_node}1->instruccion_${this.bloque.line}_${this.bloque.column}_;`)
+        this.bloque.ast()
     }
 }

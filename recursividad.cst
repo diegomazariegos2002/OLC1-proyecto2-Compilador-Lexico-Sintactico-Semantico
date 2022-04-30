@@ -1,0 +1,18 @@
+drawTree(int depth): void {
+    if (depth != 0) {
+        PrintLn("Hola soy recursivo "+depth);
+        drawTree(depth - 1);
+    }else{
+        PrintLn("upsi!!! ya llegue al tope"+depth);
+    }
+
+}
+
+Principal() {
+    PrintLn("===============¿SI SALE?=================");
+    drawTree(4);
+    PrintLn("================ FIN ====================");
+}
+
+run Principal();
+

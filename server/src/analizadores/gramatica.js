@@ -98,7 +98,7 @@ break;
 case 5:
  console.error('Este es un error sintáctico'); let retorno = {value: null, type: Tipo.ERROR}; return retorno;
 break;
-case 6: case 7: case 11: case 37: case 38: case 39: case 40: case 41: case 47: case 48: case 52: case 53: case 54: case 55: case 56: case 60: case 61: case 96:
+case 6: case 7: case 8: case 11: case 37: case 38: case 39: case 40: case 41: case 47: case 48: case 52: case 53: case 54: case 55: case 56: case 60: case 61: case 96:
  this.$ = $$[$0]; 
 break;
 case 9: case 35: case 43: case 44: case 45: case 46:
@@ -273,6 +273,21 @@ case 95:
 break;
 case 97:
  this.$ = new Casteo($$[$0-2], $$[$0], _$[$0-3].first_line, _$[$0-3].first_column);
+break;
+case 98:
+ this.$ = new toLower($$[$0-1], _$[$0-3].first_line, _$[$0-3].first_column); 
+break;
+case 99:
+ this.$ = new toUpper($$[$0-1], _$[$0-3].first_line, _$[$0-3].first_column); 
+break;
+case 100:
+ this.$ = new Round($$[$0-1], _$[$0-3].first_line, _$[$0-3].first_column); 
+break;
+case 101:
+ this.$ = new Length($$[$0-1], _$[$0-3].first_line, _$[$0-3].first_column); 
+break;
+case 102:
+ this.$ = new TypeOf($$[$0-1], _$[$0-3].first_line, _$[$0-3].first_column); 
 break;
 case 103:
  this.$ = new ToString($$[$0-1], _$[$0-3].first_line, _$[$0-3].first_column); 
@@ -646,6 +661,12 @@ _handle_error:
         const { Not } = require('../expresiones/operadores_logicos/Not.ts');
                 //expresiones de funciones reservadas
         const { ToString } = require('../expresiones/funciones_reservadas/ToString.ts');
+        const { Length } = require('../expresiones/funciones_reservadas/Length.ts');
+        const { Round } = require('../expresiones/funciones_reservadas/Round.ts');
+        const { toLower } = require('../expresiones/funciones_reservadas/toLower.ts');
+        const { toUpper } = require('../expresiones/funciones_reservadas/toUpper.ts');
+        const { TypeOf } = require('../expresiones/funciones_reservadas/TypeOf.ts');
+
         //Importación de herramientas auxiliares
         const { Consola } = require('../consola_singleton/Consola.ts');
         const { Tipo } = require('../abstracto/Retorno.ts');

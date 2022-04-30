@@ -1,0 +1,38 @@
+funcionesEspecialesYNativas(): void{
+    int a = 15;
+    Println("------------------TOLOWER-------------------");
+    Println("SIN TOLOWER");
+    Println(toLower("CON TOLOWER"));
+    Println("------------------TOUPPER-------------------");
+    Println("sin toupper");
+    Println(toUpper("con toupper"));
+    Println("------------------ROUND-------------------");
+    double c=26.5;
+    Println("sin round: "+c);
+    c=round(c);
+    Println("con round "+c);
+    double cc=26.4;
+    Println("sin round: "+cc);
+    cc=round(cc);
+    Println("con round "+cc);
+    Println("-----------------TYPEOF--------------------");
+    string x="soy una cadena";
+    int y = 50;
+    double z = 78.5;
+    char xx = 'a';
+    boolean yy = true;
+    Println("tipo: "+typeof(x));
+    Println("tipo: "+typeof(y));
+    Println("tipo: "+typeof(z));
+    Println("tipo: "+typeof(xx));
+    Println("tipo: "+typeof(yy));
+    Println("------------------LENGTH-------------------");
+    string cadena="soy una cadena";
+    Println("tamaño: "+length(cadena));
+    Println("------------------TOSTRING-------------------");
+    int numero=105;
+    Println("tipo: "+typeof(numero));
+    Println("tipo: "+typeof(toString(numero)));
+}
+
+RUN funcionesEspecialesYNativas();

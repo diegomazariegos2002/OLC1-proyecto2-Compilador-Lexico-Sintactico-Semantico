@@ -155,6 +155,12 @@
         const { Not } = require('../expresiones/operadores_logicos/Not.ts');
                 //expresiones de funciones reservadas
         const { ToString } = require('../expresiones/funciones_reservadas/ToString.ts');
+        const { Length } = require('../expresiones/funciones_reservadas/Length.ts');
+        const { Round } = require('../expresiones/funciones_reservadas/Round.ts');
+        const { toLower } = require('../expresiones/funciones_reservadas/toLower.ts');
+        const { toUpper } = require('../expresiones/funciones_reservadas/toUpper.ts');
+        const { TypeOf } = require('../expresiones/funciones_reservadas/TypeOf.ts');
+
         //Importación de herramientas auxiliares
         const { Consola } = require('../consola_singleton/Consola.ts');
         const { Tipo } = require('../abstracto/Retorno.ts');
@@ -351,11 +357,11 @@ EXPRESION:
         /*Casteos*/
         |       parentesisAbre TIPO parentesisCierra EXPRESION { $$ = new Casteo($2, $4, @1.first_line, @1.first_column);} 
         /*Funciones reservadas del lenguaje*/
-        |       toLower parentesisAbre EXPRESION parentesisCierra {}
-        |       toUpper parentesisAbre EXPRESION parentesisCierra {}
-        |       round parentesisAbre EXPRESION parentesisCierra {}
-        |       length parentesisAbre EXPRESION parentesisCierra {}
-        |       TypeOf parentesisAbre EXPRESION parentesisCierra {}
+        |       toLower parentesisAbre EXPRESION parentesisCierra { $$ = new toLower($3, @1.first_line, @1.first_column); }
+        |       toUpper parentesisAbre EXPRESION parentesisCierra { $$ = new toUpper($3, @1.first_line, @1.first_column); }
+        |       round parentesisAbre EXPRESION parentesisCierra { $$ = new Round($3, @1.first_line, @1.first_column); }
+        |       length parentesisAbre EXPRESION parentesisCierra { $$ = new Length($3, @1.first_line, @1.first_column); }
+        |       TypeOf parentesisAbre EXPRESION parentesisCierra { $$ = new TypeOf($3, @1.first_line, @1.first_column); }
         |       to_String parentesisAbre EXPRESION parentesisCierra { $$ = new ToString($3, @1.first_line, @1.first_column); }
         |       toCharArray parentesisAbre EXPRESION parentesisCierra {}
         /*Valores que pueden estar en las expresiones*/

@@ -71,7 +71,7 @@ export class Llamada extends Expresion {
         const nombre = `node_${this.line}_${this.column}_`
         return `
         ${nombre};
-        ${nombre}[label="\\<Valor\\>\\n\\"\\""];
+        ${nombre}[label="\\<Llamada\\>\\n\\"{${this.nombre}}\\""];
         `
     }
 }
